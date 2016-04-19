@@ -1,18 +1,18 @@
 {
-  "name": "Sage",
+  "name": "p.h.a.s.e (Sage)",
   "version": "8.2.1",
   "author": "Ben Word <ben@benword.com>",
   "contributors": [
     {
       "name": "Christian Kaisermann",
-      "email": "christian@kaisermann.it"
+      "email": "christian@kaisermann.me"
     }
   ],
   "homepage": "https://roots.io/sage/",
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git@bitbucket.org:chriskaisermann/k.a.g.e.git"
+    "url": "git@bitbucket.org:chriskaisermann/p.h.a.s.e.git"
   },
   "licenses": [
     {
