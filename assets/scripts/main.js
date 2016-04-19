@@ -39,10 +39,13 @@
 		}
 	};
 	
-	d.addEventListener( "DOMContentLoaded", function loadListener()
-	{
-		d.removeEventListener( "DOMContentLoaded", loadListener, false );
+	if(d.readyState === "interactive" || d.readyState === "complete")
 		Util.loadEvents();
-	}, false );
+	else
+		d.addEventListener( "DOMContentLoaded", function loadListener()
+		{
+			d.removeEventListener( "DOMContentLoaded", loadListener, false );
+			Util.loadEvents();
+		}, false );
 
 })(window.jQuery || window.Zepto || window.Cash || undefined);
