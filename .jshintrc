@@ -11,5 +11,10 @@
   "newcap": true,
   "noarg": true,
   "node": true,
-  "strict": false
+  "strict": false,
+  "globals": {
+  	"$": false,
+  	"Cash": false,
+  	"Zepto": false
+  }
 }

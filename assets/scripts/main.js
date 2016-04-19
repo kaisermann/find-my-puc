@@ -2,61 +2,47 @@
 
 (function($) 
 {
-	var PAGE_PARAMS;
+	var w = window
+	, d = document
+	, PAGE_PARAMS;
 
-	var Kage = 
+	var Events = 
 	{
 		'common': 
 		{
-			init: function() 
-			{
-			},
-			end: function() 
-			{
-			}
-		},
-		'home':
-		{
-			init: function() 
-			{
-			},
-			end: function() 
-			{
-			}
+			init: function(){},
+			end: function(){}
 		}
 	};
 
-	var UTIL = 
+	var Util = 
 	{
 		fire: function(func, funcname, args) 
 		{
-			var fire;
-			var namespace = Kage;
-			funcname = (funcname === undefined) ? 'init' : funcname;
-			fire = func !== '';
-			fire = fire && namespace[func];
-			fire = fire && typeof namespace[func][funcname] === 'function';
+			var fire, namespace = Events;
+			funcname = funcname || 'init';
+			fire = (func !== '' && namespace[func] && typeof namespace[func][funcname] === 'function');
 
 			if (fire)
 				namespace[func][funcname](args);
 		},
 		loadEvents: function() 
 		{
-			UTIL.fire('common');
-			
-			PAGE_PARAMS = document.body.className.replace(/-/g, '_').split(/\s+/);
+			Util.fire('common');
+			PAGE_PARAMS = d.body.className.replace(/-/g, '_').split(/\s+/);
 			for(var i = 0; i < PAGE_PARAMS.length; i++)
 			{
-				var classnm = PAGE_PARAMS[i];
-
-				UTIL.fire(classnm);
-				UTIL.fire(classnm, 'end');
+				Util.fire(PAGE_PARAMS[i]);
+				Util.fire(PAGE_PARAMS[i], 'end');
 			}
-
-			UTIL.fire('common', 'end');
+			Util.fire('common', 'end');
 		}
 	};
+	
+	d.addEventListener( "DOMContentLoaded", function loadListener()
+	{
+		d.removeEventListener( "DOMContentLoaded", loadListener, false );
+		Util.loadEvents();
+	}, false );
 
-	$(document).ready(UTIL.loadEvents);
-
-})(jQuery);
+})(window.jQuery || window.Zepto || window.Cash || undefined);
