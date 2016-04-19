@@ -11,5 +11,5 @@
   "newcap": true,
   "noarg": true,
   "node": true,
-  "strict": true
+  "strict": false
 }

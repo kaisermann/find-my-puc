@@ -40,6 +40,7 @@
     "gulp-imagemin": "^2.2.1",
     "gulp-jshint": "^1.9.4",
     "gulp-plumber": "^1.1.0",
+    "gulp-preprocess": "^2.0.0",
     "gulp-print": "^2.0.1",
     "gulp-rename": "^1.2.0",
     "gulp-rev": "^5.1.0",
