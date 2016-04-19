@@ -1,0 +1,14 @@
+.is-container
+	width 100%
+	margin-left auto
+	margin-right auto
+	position relative
+	
+	+above(rem(480px))
+		width rem(461px)
+	+above(rem(767px))
+		width rem(740px)
+	+above(rem(991px))
+		width rem(960px)
+	+above(rem(1200px))
+		width rem($site-width)

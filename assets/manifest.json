@@ -1,0 +1,36 @@
+{
+  "dependencies": {
+    "set.js": {
+      "bower": []
+    },
+    "main.js": {
+      "files": [
+        "scripts/main.js"
+      ],
+      "vendor": ["assets/scripts/vendor/*.js"],
+      "main": true
+    },
+    "main.css": {
+      "files": [
+        "styles/main.styl"
+      ],
+      "vendor": ["assets/styles/vendor/reset.css","assets/styles/vendor/*.css"],
+      "bower": [],
+      "main": true
+    },
+    "editor-style.css": {
+      "files": [
+        "styles/layouts/tinymce.styl"
+      ]
+    }
+  },
+  "config": {
+    "devUrl": "localhost/name/"
+  }
+  ,
+  "paths":
+  {
+    "source": "assets/",
+    "dist": "dist/"
+  }
+}
