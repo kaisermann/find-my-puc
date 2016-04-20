@@ -41,6 +41,8 @@ var CLIOpts = {
   rev: _.argv.production || _.argv.p,
   // Disable source maps when `--production`
   maps: _.argv.maps,
+  // Fail styles task on error when `--production`
+  failStyleTask: _.argv.production || _.argv.p,
   // Do not minify files when '-d'
   assetdebug: _.argv.d,
   // Start BroswerSync when '--sync'
@@ -52,7 +54,9 @@ var CLIOpts = {
 var cssTasks = function(filename) 
 {
 	return _.lazypipe()
-	.pipe(_.plumber)
+	.pipe(function() {
+		return _.gulpif(!CLIOpts.failStyleTask, _.plumber());
+	})
 	.pipe(function()
 	{
 		return _.gulpif(CLIOpts.maps, _.sourcemaps.init());
@@ -120,6 +124,14 @@ gulp.task('styles', ['wiredep'], function()
 	_.manifest.forEachDependency('css', function(dep) 
 	{
 		var cssTasksInstance = cssTasks(dep.name);
+		if (!CLIOpts.failStyleTask) 
+		{
+			cssTasksInstance.on('error', function(err) 
+			{
+				console.error(err.message);
+				this.emit('end');
+			});
+		}
 		merged.add(gulp.src(dep.globs)
 			.pipe(cssTasksInstance));
 	});
