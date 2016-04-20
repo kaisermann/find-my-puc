@@ -2,5 +2,66 @@ size(w, h = w)
 	width w
 	height h
 	
-rem(px, base = 16)
-	return unit(px / base, "rem")
+// 100% = 1em ~= 16px ~= 14pt
+px(amount, ignore-base = false)
+	if unit(amount) == "%"
+		amount = percent(_base-font-size, ignore-base) / percent(_base-font-size, true) * (amount / 100) * 16
+	else if unit(amount) == "em" or unit(amount) == "rem"
+		amount = em(_base-font-size, ignore-base) / em(_base-font-size, true) * amount * 16
+	else if unit(amount) == "pt"
+		amount = pt(_base-font-size, ignore-base) / pt(_base-font-size, true) * (amount / 14) * 16
+	else if unit(amount) == "px" or unit(amount) == ""
+		if (unit(_base-font-size) != "px") && !ignore-base
+			amount = px(_base-font-size, true) / 16 * amount
+		else if !ignore-base
+			amount = _base-font-size / 16 * amount
+
+	unit(amount, "px")
+
+pt(amount, ignore-base = false)
+	if unit(amount) == "%"
+		amount = percent(_base-font-size, ignore-base) / percent(_base-font-size, true) * (amount / 100) * 14
+	else if unit(amount) == "em" or unit(amount) == "rem"
+		amount = em(_base-font-size, ignore-base) / em(_base-font-size, true) * amount * 14
+	else if unit(amount) == "px"
+		amount = px(_base-font-size, ignore-base) / px(_base-font-size, true) * (amount / 16) * 14
+	else if unit(amount) == "pt" or unit(amount) == ""
+		if (unit(_base-font-size) != "pt") && !ignore-base
+			amount = pt(_base-font-size, true) / 14 * amount
+		else if !ignore-base
+			amount = _base-font-size / 14 * amount
+
+	unit(amount, "pt")
+
+em(amount, ignore-base = false)
+	if unit(amount) == "%"
+		amount = percent(_base-font-size, ignore-base) / percent(_base-font-size, true) * (amount / 100)
+	else if unit(amount) == "px"
+		amount = px(_base-font-size, ignore-base) / px(_base-font-size, true) * (amount / 16)
+	else if unit(amount) == "pt"
+		amount = pt(_base-font-size, ignore-base) / pt(_base-font-size, true) * (amount / 14)
+	else if unit(amount) == "em" or unit(amount) == "rem" or unit(amount) == ""
+		if (unit(_base-font-size) != "em") && !ignore-base
+			amount = em(_base-font-size, true) * amount
+		else if !ignore-base
+			amount = _base-font-size * amount
+
+	unit(amount, "em")
+
+rem(amount, ignore-base = false)
+	unit(em(amount, ignore-base), "rem")
+
+percent(amount, ignore-base = false)
+	if unit(amount) == "px"
+		amount = px(_base-font-size, ignore-base) / px(_base-font-size, true) * (amount / 16) * 100
+	else if unit(amount) == "em" or unit(amount) == "rem"
+		amount = em(_base-font-size, ignore-base) / em(_base-font-size, true) * amount * 100
+	else if unit(amount) == "pt"
+		amount = pt(_base-font-size, ignore-base) / pt(_base-font-size, true) * (amount / 14) * 100
+	else if unit(amount) == "%" or unit(amount) == ""
+		if (unit(_base-font-size) != "%") && !ignore-base
+			amount = percent(_base-font-size, true) / 100 * amount
+		else if !ignore-base
+			amount = _base-font-size / 100 * amount
+
+	unit(amount, "%")
