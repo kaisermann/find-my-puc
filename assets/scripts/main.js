@@ -4,9 +4,11 @@
 {
 	var w = window
 	, d = document
-	, PAGE_PARAMS;
+	, PAGE_PARAMS
+	, Events
+	, Util;
 
-	var Events = 
+	Events = 
 	{
 		'common': 
 		{
@@ -15,7 +17,7 @@
 		}
 	};
 
-	var Util = 
+	Util = 
 	{
 		fire: function(func, funcname, args) 
 		{
