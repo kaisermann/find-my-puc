@@ -10,10 +10,13 @@ rolleiflex.breakpoints.lg.container = _site-width
 
 bp = rolleiflex.breakpoints
 rupture.base-font-size 				= _base-font-size
-rupture.scale 						= 0 unit(bp.sm.breakpoint,"px") unit(bp.md.breakpoint,"px") unit(bp.lg.breakpoint,"px")
+rupture.scale 						= 0 (bp.sm.breakpoint) (bp.md.breakpoint) (bp.lg.breakpoint)
 rupture.scale-names 				= keys(rolleiflex.breakpoints)
 rupture.anti-overlap 				= true
-rupture.enable-em-breakpoints 		= true
+rupture.enable-em-breakpoints 		= false
+rupture.mobile-cutoff 				= bp.sm.breakpoint
+rupture.tablet-cutoff 				= bp.md.breakpoint
+rupture.desktop-cutoff 				= bp.md.breakpoint
 /* End Bower */
 
 /* Colors */
