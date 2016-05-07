@@ -26,6 +26,7 @@ var _ = {
 	, util: require('gulp-util')
 	, del: require('del')
 	, cmq: require('gulp-combine-mq')
+	, cssstats: require('gulp-stylestats')
 };
 
 var paths = _.manifest.paths
@@ -121,6 +122,13 @@ var writeToManifest = function(directory)
 };
 
 /* Tasks */
+gulp.task('stats', function()
+{
+	return gulp.src('./dist/styles/**.css')
+	.pipe(_.cssstats())
+    .pipe(gulp.dest('./'));
+});
+
 gulp.task('styles', ['wiredep'], function() 
 {
 	var merged = _.merge();

@@ -1,24 +1,35 @@
+/* Main */
+_base-font-size 					= 16px
+_site-width 						= 1140px
+
 /* Bower overrides */
-rupture.base-font-size 			= 16px
-rupture.scale 					= 0 480px 767px 991px 1219px
-rupture.scale-names 			= 'ty' 'xs' 'sm' 'md' 'lg'
-rupture.anti-overlap 			= true
+rolleiflex.baseFontSize 			= _base-font-size
+rolleiflex.use.rem 					= true
+rolleiflex.build.declarative 		= true
+rolleiflex.breakpoints.lg.container = _site-width
 
-rupture.mobile-cutoff 			= 480px
-rupture.tablet-cutoff 			= 991px
-rupture.desktop-cutoff 			= 992px
-rupture.enable-em-breakpoints 	= true
+bp = rolleiflex.breakpoints
+rupture.base-font-size 				= _base-font-size
+rupture.scale 						= 0 unit(bp.sm.breakpoint,"px") unit(bp.md.breakpoint,"px") unit(bp.lg.breakpoint,"px")
+rupture.scale-names 				= keys(rolleiflex.breakpoints)
+rupture.anti-overlap 				= true
+rupture.enable-em-breakpoints 		= true
 /* End Bower */
-
-_base-font-size 				= rupture.base-font-size
-_site-width 					= 1020px
 
 /* Colors */
 
+colors = {
+
+}
+
 /* Fonts */
 
-_fonts = {}
+fonts = {
 
-/* Sizes */
+}
 
-_margins = {}
+/* Margins */
+
+margins = {
+
+}

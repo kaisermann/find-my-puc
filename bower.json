@@ -1,5 +1,5 @@
 {
-  "name": "kage",
+  "name": "p.h.a.s.e",
   "homepage": "https://roots.io/sage/",
   "authors": [
     "Ben Word <ben@benword.com>",
@@ -8,15 +8,20 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "rupture-by-jenius": "~0.6.1"
+    "rupture-by-jenius": "^0.6.1",
+    "rolleiflex": "^1.1.0"
   },
   "overrides": {
     "rupture-by-jenius": {
       "main": "rupture/index.styl"
     },
+    "rolleiflex": {
+      "main": "src/wrapper.styl"
+    },
     "": {
       "dependencies": {},
       "main": ""
     }
-  }
+  },
+  "devDependencies": {}
 }
