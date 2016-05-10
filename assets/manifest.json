@@ -1,8 +1,5 @@
 {
   "dependencies": {
-    "set.js": {
-      "bower": []
-    },
     "main.js": {
       "files": [
         "scripts/main.js"
@@ -21,7 +18,7 @@
   },
   "config": {
     "prefixes": ["last 2 versions","android 4","opera 12"],
-    "devUrl": "localhost/projectname/"
+    "devUrl": "localhost/findmypuc/"
   }
   ,
   "paths":

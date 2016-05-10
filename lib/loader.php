@@ -3,10 +3,11 @@ $dir = dirname(__FILE__);
 $files = [
 	'../vendor/autoload',
 	'Graph/Graph',
-	'Helpers',
+	'Helpers/Assets',
+	'Helpers/Helpers',
 	'Neo',
+	'Main',
 ];
-$files[] = '../config';
 
 for($i=0,$count=count($files);$i<$count;$i++)
 	require_once $dir.'/'.$files[$i].'.php';

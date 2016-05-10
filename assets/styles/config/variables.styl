@@ -1,5 +1,5 @@
 /* Main */
-_base-font-size 					= 16px
+_base-font-size 					= 10px
 _site-width 						= 1140px
 
 /* Bower overrides */
@@ -34,6 +34,24 @@ colors = {
 	"black": #353B42,
 }
 
+// Light, dark, saturated and desaturated colors. From index [0] to [8]
+for colorName, hex in colors
+	colors['lighten-'+colorName] = ()
+	colors['darken-'+colorName] = ()
+	colors['desaturate-'+colorName] = ()
+	colors['saturate-'+colorName] = ()
+	for i in (1..9)
+		push(colors['lighten-'+colorName], lighten(hex, unit(i * 10, '%')))
+		push(colors['darken-'+colorName], darken(hex, unit(i * 10, '%')))
+		push(colors['desaturate-'+colorName], desaturate(hex, unit(i * 10, '%')))
+		push(colors['saturate-'+colorName], saturate(hex, unit(i * 10, '%')))
+	
+	{'darken-'+colorName}
+		foo: colors['lighten-'+colorName]
+		foo: colors['darken-'+colorName]
+		foo: colors['desaturate-'+colorName]
+		foo: colors['saturate-'+colorName]
+
 /* Fonts */
 
 fonts = {
@@ -44,4 +62,11 @@ fonts = {
 
 margins = {
 
+}
+
+/* Sizes */
+
+sizes = {
+	aside: 26.0rem,
+	searchViewer: 39.0rem,
 }

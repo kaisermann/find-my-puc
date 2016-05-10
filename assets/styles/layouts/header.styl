@@ -1,0 +1,147 @@
+#header
+	position fixed
+	left 0
+	top 0
+	size(sizes.aside, 100vh)
+	background: colors.gray
+	color: colors.white
+	z-index 2
+	
+.header__logo
+	font-size 1.8rem
+	padding 1rem 1.5rem
+	line-height 1.4
+	background: colors.darken-blue[2]
+	color: colors.white
+	
+.header__search
+	margin-top 6rem
+			
+#search-form
+	.btn + .btn
+		margin-top .5rem
+	
+.search
+	&__label
+		display block
+		font-size 1.6rem
+		
+	&__place
+		color: colors.black
+		background: colors.yellow
+		cursor pointer
+		border-right: .6rem solid colors.blue
+		cursor pointer
+		transition background .3s ease
+		
+		&--active
+		&:hover
+			background: colors.darken-blue[3]
+			color: colors.white
+			
+		span
+			display block
+			transition .3s ease
+	
+		&--done
+			.search__label
+				font-size 1.2rem
+				
+			.search__value
+				animation fadeIn .3s ease
+				margin-top .5rem
+		
+	&__value
+		display block
+		font-size 1.5rem
+	
+.searchViewer
+	position fixed
+	opacity 0
+	visibility hidden
+	left: (sizes.aside - sizes.searchViewer)
+	top 0
+	size(sizes.searchViewer, 100vh)
+	background: colors.lighten-gray[8]
+	transition all .3s ease
+	z-index 1
+	border-right: .3rem solid colors.darken-blue[3]
+	
+	&--active
+		left: sizes.aside
+		opacity 1
+		visibility visible
+		
+	&__input
+		width 100%
+		border none
+	
+	&__list
+		position relative
+		width 100%
+		overflow scroll
+		max-height calc(100% - 3.8rem)
+		line-height 1.2
+		z-index 2
+		
+	&__item
+		overflow hidden
+		transition max-height .35s ease, opacity .2s ease, background .2s ease
+		cursor pointer
+		max-height 6rem
+		opacity 1
+		border-top: 1px solid colors.lighten-gray[5]
+		
+		span 
+			display inline-block
+			padding .8rem 2rem
+			transition transform .4s ease
+		
+		&:nth-child(odd)
+			background: colors.darken-white[0]
+			
+		&:nth-child(even)
+			background: colors.darken-white[1]
+			
+		&:active:not(&--disabled)
+			span
+				transform scale(1.04)
+		
+		&&--current
+		&:not(&--disabled):hover
+			background: colors.darken-blue[3]
+			color: colors.white
+			
+		&&--current
+			font-weight bold
+			
+		&--inactive
+			border 0
+			max-height 0 
+			opacity 0
+			
+		&--disabled
+			color: colors.lighten-gray[3]
+			
+			&:hover
+				color: colors.lighten-gray[3]
+				
+	&__no-results
+		display block
+		width 100%
+		top 4rem
+		position absolute
+		font-weight bold
+		padding .5rem
+		color: colors.lighten-gray[3]
+		z-index 1
+		transition opacity .3s ease
+		opacity 0
+
+		&--visible
+			opacity 1
+			
+@keyframes fadeIn {
+  from {  opacity: 0;  }
+  to { opacity: 1; }
+}

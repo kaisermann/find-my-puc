@@ -1,5 +1,27 @@
 <?php
 
+/* Template Related */
+
+function body_class()
+{
+	$classes = [];
+
+	if(Main::is('home'))
+		$classes[] = 'home';
+
+	echo implode(' ', $classes);
+}
+
+function getTemplatePart($url)
+{
+	$absUrl = ABSPATH.$url.'.php';
+
+	if(file_exists($absUrl))
+		require_once($absUrl);
+	else
+		throw new Exception("Invalid file url: ". $absUrl);
+}
+
 /* Array Related */
 
 function arrayPrint($array, $identation = 0)
@@ -38,11 +60,10 @@ function printElapsedTimes($keys = NULL)
 			if(isset($elapsedtimes[$key]))
 				echo $elapsedtimes[$key]." [TIME=".$key."]".'<br />';
 		}
-	}
+	}	
 	else
 	{
 		foreach ($elapsedtimes as $key => $value)
 			echo $value." [TIME=".$key."]".'<br />';
 	}
-	echo "<br /><br />";
 }
