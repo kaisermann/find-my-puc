@@ -16,9 +16,7 @@ p,
 blockquote,
 figure,
 ol,
-ul,
-input
-textarea
+ul
 {
     margin: 0;
     padding: 0;
@@ -44,6 +42,14 @@ button {
 a {
     text-decoration: none;
 }
+
+input,
+textarea,
+button
+{
+    margin: 0;
+}
+
 button {
     overflow: visible;
     border: 0;
