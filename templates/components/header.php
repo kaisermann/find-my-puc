@@ -16,8 +16,8 @@
 			<button for="target" class="btn btn--submit">
 				Me ajuda!
 			</button>
-			<input type="hidden" name="origin" class="search-origin">
-			<input type="hidden" name="target" class="search-target">
+			<input type="hidden" name="from" class="search-origin">
+			<input type="hidden" name="to" class="search-target">
 		</form>
 	</div>
 </aside>

@@ -3,7 +3,7 @@
 define('APP_NAME', 'Perdido Pelo Campus');
 
 define('QUERY_SEARCH_LIST', 'MATCH (n)
-WHERE NOT (n:Ignorable OR n.subtype STARTS WITH "banheiro")
+WHERE NOT (n:Ignorable OR (exists(n.subtype) AND n.subtype STARTS WITH "banheiro"))
 RETURN n.id as id, n.names as names ORDER BY LOWER(n.names[0]) ASC');
 
 define('NODE_UNIQUE_ID', 'id');
