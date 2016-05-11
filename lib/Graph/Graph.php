@@ -45,6 +45,85 @@ class Graph
 		$this->edgeCount += 2;
 	}
 
+	public function getRelevantParentsBetween($start, $end)
+	{
+		$genericPaths = [];
+		$relevantParents = [];
+		$minsize = PHP_INT_MAX;
+		//self::printMe();
+		self::GetAllPathsBetween(
+			$end
+			, [$start => self::getNode($start)]
+			, $genericPaths, $minsize);
+		$maxsize = $minsize;
+		echo "<".$minsize.">";
+		echo "<".$maxsize."><br>";
+		foreach($genericPaths as $path)
+		{
+			if(count($path)<=$maxsize)
+			{
+				foreach($path as $nodeID => $val)
+					$relevantParents[$nodeID] = 1;
+			}
+		}
+		return $relevantParents;
+	}
+
+	public function getAllPathsBetween($end, $visited, &$genericPaths, &$minsize)
+	{
+		$edges = end($visited)->getEdges();
+
+		foreach ($edges as $e)
+		{
+			$node = $e->getNodeB();
+			if(array_key_exists($node->id(), $visited))
+				continue;
+
+			if($node->id()==$end)
+			{
+				$visited[$end] = $node;
+
+				$n_visited = count($visited);
+					$genericPaths[] = $visited;
+				if($n_visited <= $minsize)
+				{
+					$minsize = $n_visited;
+				}
+
+				$value = end($visited);
+				$key = key($visited);
+				unset($visited[$key]);
+
+				break;
+			}
+		}
+
+		foreach($edges as $e)
+		{
+			$node = $e->getNodeB();
+
+			if(array_key_exists($node->id(), $visited) || $node->id() == $end)
+				continue;
+
+			$visited[$node->id()] = $node;
+			self::getAllPathsBetween($end, $visited, $genericPaths, $minsize);
+
+			// remove ultimo visitado
+			$value = end($visited);
+			$key = key($visited);
+			unset($visited[$key]);
+		}
+	}
+
+	private function printAllPaths($visited)
+	{
+		foreach($visited as $node)
+		{
+			print_r($node->id()." ");
+		}
+		echo "<br/>";
+	}
+
 	public function getPathBetween($start, $finish, $params = [])
 	{
 		$queue = new GraphQueue();

@@ -63,6 +63,7 @@ class Neo
 		$nodeB_ID = $nodeB[0];
 		$nodeB_Type = $nodeB[1];
 
+
 		$parentA = explode("n", $nodeA_ID);
 		$parentB = explode("n", $nodeB_ID);
 
