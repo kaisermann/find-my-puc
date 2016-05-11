@@ -48,8 +48,7 @@ class Neo
 	{
 		$query = $query.' SKIP '.$skip.' '.'LIMIT '.$limit;
 		$result = self::$client->run($query);
-		echo $query;
-		echo '<br /><br />';
+		p_dump($query);
 		return $result;
 	}
 
@@ -92,7 +91,7 @@ class Neo
 		WITH DISTINCT relevantParent
 		MATCH (n)<-[:PARENT_OF]-(relevantParent)
 		WITH DISTINCT n
-		MATCH (n)<-[e:LINKED_TO|PARENT_OF]-(m) 
+		MATCH (n)<-[e:REGULAR_CONNECTION|STAIR_CONNECTION|LIFT_CONNECTION|PARENT_OF]-(m) 
 		RETURN n, e, m';
 
 		elapsetime("SUBGRAPH_QUERY_LOCATIONS");

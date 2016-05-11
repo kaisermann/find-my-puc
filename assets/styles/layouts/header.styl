@@ -1,8 +1,6 @@
 #header
-	position fixed
 	left 0
 	top 0
-	size(sizes.aside, 100vh)
 	background: colors.gray
 	color: colors.white
 	z-index 2
@@ -16,11 +14,7 @@
 	
 .header__search
 	margin-top 6rem
-			
-#search-form
-	.btn + .btn
-		margin-top .5rem
-	
+				
 .search
 	&__label
 		display block
@@ -55,22 +49,27 @@
 		display block
 		font-size 1.5rem
 	
-.searchViewer
-	position fixed
-	opacity 0
-	visibility hidden
-	left: (sizes.aside - sizes.searchViewer)
-	top 0
-	size(sizes.searchViewer, 100vh)
-	background: colors.lighten-gray[8]
-	transition all .3s ease
-	z-index 1
-	border-right: .3rem solid colors.darken-blue[3]
-	
-	&--active
-		left: sizes.aside
-		opacity 1
-		visibility visible
+.search-viewer	
+	&__bg
+		position fixed
+		top 0
+		left 0
+		size(100%)
+		background-color: rgba(colors.black,.6)
+		transition opacity .3s ease, visibility .3s ease
+		opacity 0
+		visibility hidden
+			
+	&__content
+		position fixed
+		left: (sizes.aside - sizes.search-viewer)
+		top 0
+		size(sizes.search-viewer, 100vh)
+		max-width 100%
+		background: colors.lighten-gray[8]
+		transition left .3s ease, top .3s ease
+		z-index 1
+		border-right: .3rem solid colors.darken-blue[3]
 		
 	&__input
 		width 100%
@@ -88,14 +87,19 @@
 		overflow hidden
 		transition max-height .35s ease, opacity .2s ease, background .2s ease
 		cursor pointer
-		max-height 6rem
+		max-height 12rem
 		opacity 1
-		border-top: 1px solid colors.lighten-gray[5]
+		border-bottom: 1px solid colors.lighten-gray[5]
 		
-		span 
+		&__content 
 			display inline-block
 			padding .8rem 2rem
 			transition transform .4s ease
+			
+		small
+			display block
+			font-size 1.2rem
+			font-style italic
 		
 		&:nth-child(odd)
 			background: colors.darken-white[0]
@@ -104,11 +108,13 @@
 			background: colors.darken-white[1]
 			
 		&:active:not(&--disabled)
+			background: colors.darken-blue[4]
+			color: colors.white
 			span
 				transform scale(1.04)
 		
 		&&--current
-		&:not(&--disabled):hover
+		&:not(&--disabled):not(:active):hover
 			background: colors.darken-blue[3]
 			color: colors.white
 			
@@ -141,7 +147,68 @@
 		&--visible
 			opacity 1
 			
-@keyframes fadeIn {
-  from {  opacity: 0;  }
-  to { opacity: 1; }
-}
+	&__close-btn
+		display none
+		
+	&--active
+		.search-viewer__bg
+			opacity 1
+			visibility visible
+		
+		.search-viewer__content
+			left: sizes.aside
+			
+.filters
+	padding 1.5rem 0
+	background-color: colors.darken-gray[1]
+	
+	&__title
+		margin 0 1.5rem
+		font-size 1.6rem
+		
+	&__section
+		margin-top 1.5rem
+		padding 1.5rem
+		font-size 1.4rem
+		background-color: colors.darken-gray[3]
+		
+		.form-control--radio
+			font-size 1.4rem
+			
+			label::before
+				size(1.6rem)
+		
+	&__item
+		margin-top 1rem
+
++above(md)
+	#header
+		position fixed
+		size(sizes.aside, 100vh)
+		
++below(sm)
+	#header
+		position static
+		width 100%
+		padding 1.5rem
+	
+	.search-viewer
+		&__content
+			max-height 40rem
+			transform translateY(-50%)
+			width auto
+			top -100%
+			left 1.5rem
+			right 1.5rem
+			border-right 0
+			
+		&__list
+			max-height calc(100% - 3.8rem)
+			
+		&__close-btn
+			display block
+
+		&--active
+			.search-viewer__content
+				left 1.5rem
+				top 50%

@@ -37,6 +37,12 @@ function arrayContainskey($array, $key) { return isset($array[$key]) || array_ke
 
 function getKeyValue($array, $id) { return (arrayContainskey($array, $id))? $array[$id] : NULL; }
 
+
+/* Random */
+function p_dump($o)
+{
+	echo '<pre>';var_dump($o);echo '</pre>';
+}
 function objectSize($var) { return ((mb_strlen(serialize($var), '8bit'))/1024)."kbs"; }
 
 $elapsedtimes = [];

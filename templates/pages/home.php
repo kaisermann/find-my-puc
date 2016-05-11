@@ -3,23 +3,34 @@
 	$client = Neo::getClient();
 	global $Request;
 // Test connection to server
-	if(isset($Request['from'])
-		&& !empty($Request['from'])
-		&& isset($Request['to'])
-		&& !empty($Request['to'])
-		&& $Request['from'] != $Request['to'])
+	if(isset($Request['origin'])
+		&& !empty($Request['origin'])
+		&& isset($Request['target'])
+		&& !empty($Request['target'])
+		&& $Request['origin'] != $Request['target'])
 	{
-		$fromNode = $Request['from'];
-		$toNode = $Request['to'];
+		$originNode = explode('|', urldecode($Request['origin']));
+		$targetNode = explode('|', urldecode($Request['target']));
+
+		$params = [];
+		if(isset($Request['filter-pathway']))
+		{
+			$params["ignore"]["edge"] = ["type" => []];
+			foreach($Request['filter-pathway'] as $filter)
+			{
+				$params["ignore"]["edge"]["type"][] = $filter;
+			}
+		}
+
 		elapsetime("SUBGRAPH_TOTAL");
 		elapsetime("SUBGRAPH_generation");
-		$g = Neo::getSubgraph($fromNode,$toNode);
+		$g = Neo::getSubgraph($originNode,$targetNode);
 		elapsetime("SUBGRAPH_generation");
 
 		elapsetime("SUBGRAPH_pathFinding");
-		$n1 = $g->getNode($fromNode);
-		$n2 = $g->getNode($toNode);
-		$path = $g->getPathBetween($n1, $n2);
+		$n1 = $g->getNode($originNode[0]);
+		$n2 = $g->getNode($targetNode[0]);
+		$path = $g->getPathBetween($n1, $n2, $params);
 		elapsetime("SUBGRAPH_pathFinding");
 		elapsetime("SUBGRAPH_TOTAL");
 		$g->printPath($path);
@@ -35,15 +46,15 @@
 		echo "graph size:".objectSize($g)."<br /><br />";
 
 		elapsetime("GRAPH_pathFinding");
-		$n1 = $g->getNode($fromNode);
-		$n2 = $g->getNode($toNode);
-		$path = $g->getPathBetween($n1, $n2);
+		$n1 = $g->getNode($originNode[0]);
+		$n2 = $g->getNode($targetNode[0]);
+		$path = $g->getPathBetween($n1, $n2, $params);
 		elapsetime("GRAPH_pathFinding");
 		elapsetime("GRAPH_TOTAL");
 		$g->printPath($path);
 	}
 	else {
-		$Request['to'] = $Request['from'] = '';
+		$Request['target'] = $Request['origin'] = '';
 	}
 	?>
 
@@ -66,4 +77,3 @@
 	<br>
 	<br>
 	<?php printElapsedTimes(); ?>
-	?>

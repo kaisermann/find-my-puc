@@ -12,8 +12,6 @@ define('NODE_PASSAGE_TYPE_ID', 'passagem');
 define('NODE_PARENT_ID', 'parent');
 define('EDGE_WEIGHT_ID', 'weight');
 define('EDGE_DIRECTION_ID', 'dir');
-define('EDGE_TYPE_LINK', 'LINKED_TO');
-define('EDGE_TYPE_PARENT', 'PARENT_OF');
 
 define('PAGE_ID', 'id');
 

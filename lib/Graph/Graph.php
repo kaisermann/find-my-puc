@@ -74,6 +74,8 @@ class Graph
 			$key = array_search('PARENT_OF', $params["ignore"]["edge"]["type"]);
 			unset($params["ignore"]["edge"]["type"][$key]);
 		}
+		p_dump($params);
+
 		$ignorableEntities = isset($params["ignore"]) ? $params["ignore"] : [];
 		$ignorableAttributes = [];
 		$distances = [];
@@ -111,7 +113,9 @@ class Graph
 
 					$path["raw"][] = $this->getNode($nextID);
 					$path["raw"][] = $curEdge;
-					if($curEdge->getAttr("type")=="LINKED_TO")
+					// Se for uma conexão valida, adicionar ao peso
+					$curEdgeType = $curEdge->getAttr("type");
+					if($curEdgeType == 'REGULAR_CONNECTION' || $curEdgeType == 'STAIR_CONNECTION')
 					{
 						$path["weight"] += $curEdge->getAttr("weight");
 					}
@@ -126,7 +130,6 @@ class Graph
 				$path["raw"] = array_reverse($path["raw"]);
 				$path["steps"] = array_reverse($path["steps"]);
 				return $path;
-				// a-b-c-d-e
 			}
 
 			// Não encontrou caminho algum

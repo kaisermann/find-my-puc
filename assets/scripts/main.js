@@ -8,18 +8,44 @@
 	, PAGE_PARAMS
 	, Events
 	, Util
-	, Helpers
-	, Reusable;
+	, Tools
+	, Reusable
+	, QueryString;
 
-	var accentMap = {'á':'a', 'ã':'a', 'é':'e', 'í':'i','ó':'o','ú':'u', 'ê':'e'};
+	String.prototype.replaceArray = function(find, replace) {
+		var replaceString = this;
+		var regex; 
+		for (var i = 0; i < find.length; i++) {
+			regex = new RegExp(find[i], "g");
+			replaceString = replaceString.replace(regex, replace[i]);
+		}
+		return replaceString;
+	};
+
+
+	var sanitizeAlphabet = 
+	{
+		'[áãà]': 'a'
+		, '[éê]': 'e'
+		, '[íî]': 'i'
+		, '[óô]': 'o'
+		, '[úüû]': 'u'
+		, 'ç': 'c'
+		, ' - ': ' '
+		, '\\.': ''
+		, 'professora?': 'prof'
+	};
 
 	// ------- //
 
 	Reusable = 
 	{
-		searchForm: $('#search-form'),
-		searchViewer: $('.searchViewer') 
+		search_form: $('#search-form'),
+		search_viewer: $('.search-viewer')
 	};
+
+	Reusable.search_viewer_content = Reusable.search_viewer.children('.search-viewer__content');
+	Reusable.search_viewer_bg = Reusable.search_viewer.children('.search-viewer__bg');
 
 	Events = 
 	{
@@ -27,34 +53,40 @@
 		{
 			init: function()
 			{
-				var $searchBtns = Reusable.searchForm.find('.search__place');
-				$searchBtns.on('click', Util.toggleSearchViewer);
-
+				QueryString = Tools.parseQueryString(window.location.search);
 				Util.searchHandler();
 			},
 			end: function(){}
 		}
 	};
 
-	Helpers = 
+	Tools = 
 	{
-		removeAccentuation: function(s) 
+		'sanitize': function(str)
 		{
-			if (!s)
-				return '';
-			var ret = '';
-			for (var i = 0; i < s.length; i++)
-				ret += accentMap[s[i]] || s[i];
-			return ret;
-		}
+			for (var val in sanitizeAlphabet)
+				str = str.replace(new RegExp(val, 'g'), sanitizeAlphabet[val]);
+
+			return str;
+		},
+		parseQueryString: function(qstr)
+		{
+			var query = {};
+			var a = qstr.substr(1).split('&');
+			for (var i = 0; i < a.length; i++) {
+				var b = a[i].split('=');
+				query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || '');
+			}
+			return query;
+		},
 	};
 
 	Util = 
 	{
 		searchHandler: function()
 		{
-			var $searchInput = Reusable.searchViewer.children('.searchViewer__input')
-			, $searchList = Reusable.searchViewer.children('.searchViewer__list');
+			var $searchInput = Reusable.search_viewer_content.children('.search-viewer__input')
+			, $searchList = Reusable.search_viewer_content.children('.search-viewer__list');
 
 			var $searchItems = $searchList.children('li');
 
@@ -62,10 +94,15 @@
 			_lastVal = -1
 			, _nResults = 0;
 
+			Reusable.search_form.find('.search__place').on('click', Util.toggleSearchViewer);
+
+			Reusable.search_viewer_content.children('.search-viewer__close-btn').on('click', Util.closeSearchViewer);
+			Reusable.search_viewer_bg.on('click', Util.closeSearchViewer);
+
 			$searchInput.on('keyup', function(e)
 			{
 				var $_= $(this);
-				var _searchParam = Helpers.removeAccentuation($_.prop('value').toLowerCase());
+				var _searchParam = Tools.sanitize($_.prop('value').toLowerCase());
 
 				if(_lastVal === _searchParam)
 					return;
@@ -76,23 +113,25 @@
 				{
 					// Pega os nomes do local e remove os acentos
 					var _names = e.getAttribute('data-names').toLowerCase();
-					_names = Helpers.removeAccentuation(_names);
+					//_names = Tools.sanitize(_names);
 
 					if(_names.indexOf(_searchParam)<0)
 					{
-						e.classList.add('searchViewer__item--inactive');
+						e.classList.add('search-viewer__item--inactive');
 					}
 					else
 					{
-						e.classList.remove('searchViewer__item--inactive');
+						e.classList.remove('search-viewer__item--inactive');
 						_nResults++;
 					}
+					console.log("search: " + _searchParam);
+					console.log("_curName: " + _names);
 				});
 
 				if(_nResults === 0)
-					Reusable.searchViewer.children('.searchViewer__no-results').addClass('searchViewer__no-results--visible');
+					Reusable.search_viewer_content.children('.search-viewer__no-results').addClass('search-viewer__no-results--visible');
 				else
-					Reusable.searchViewer.children('.searchViewer__no-results').removeClass('searchViewer__no-results--visible');
+					Reusable.search_viewer_content.children('.search-viewer__no-results').removeClass('search-viewer__no-results--visible');
 
 
 				_lastVal = _searchParam;
@@ -102,15 +141,15 @@
 			{
 				var $_ = $(this);
 
-				if($_.hasClass('searchViewer__item--disabled'))
+				if($_.hasClass('search-viewer__item--disabled'))
 					return;
 
 				var _id = $_.attr('data-id')
-				, _name = $_.children('span').text()
-				, _curRole = Reusable.searchViewer.attr('for');
+				, _name = $_.find('.search-viewer__item__name').text()
+				, _curRole = Reusable.search_viewer_content.attr('for');
 
-				var $label = Reusable.searchForm.children('label[for="'+_curRole+'"]');
-				var $input = Reusable.searchForm.children('input.search-'+_curRole);
+				var $label = Reusable.search_form.children('label[for="'+_curRole+'"]');
+				var $input = Reusable.search_form.children('input.search-'+_curRole);
 
 				var _inputID = $input.attr('value');
 
@@ -123,7 +162,7 @@
 					.children('.search__value')
 					.text('');
 
-					$_.removeClass('searchViewer__item--current');
+					$_.removeClass('search-viewer__item--current');
 				}
 				else // Se não, marca o item
 				{
@@ -134,29 +173,56 @@
 					.text(_name);
 
 					$_.parent()
-					.children('.searchViewer__item--current')
-					.removeClass('searchViewer__item--current');
+					.children('.search-viewer__item--current')
+					.removeClass('search-viewer__item--current');
 
-					$_.addClass('searchViewer__item--current');
+					$_.addClass('search-viewer__item--current');
 				}
 
+			});
+
+			["origin","target"].forEach(function(val)
+			{
+				if(QueryString[val])
+				{
+					var _name = $searchItems
+					.filter('[data-id="'+QueryString[val]+'"]')
+					.find('.search-viewer__item__name')
+					.text();
+
+					Reusable.search_form.children('label[for="'+val+'"]')
+					.addClass('search__place--done')
+					.children('.search__value')
+					.text(_name);
+
+					Reusable.search_form.children('input.search-'+val).prop('value', QueryString[val]);
+				}
+			});
+
+			$('.js-radio').on('click', function()
+			{
+				var $_ = $(this);
+				if ($_.is(":checked")) 
+				{
+					$("input:checkbox[name='" + $_.attr("name") + "']").prop("checked", false);
+					$_.prop("checked", true);
+				} 
+				else
+					$_.prop("checked", false);
 			});
 		},
 		toggleSearchViewer: function(e)
 		{
-			// OppositeRole para pegarmos o ID do outro termo e não deixarmos escolher o mesmo.
-			var _oppositeRole = 'target';
-
 			e.preventDefault();
 
-			var activeClass = 'searchViewer--active'
-			, btnActiveClass = 'search__place--active';
+			// Opposite Role para pegarmos o ID do outro termo e não deixarmos escolher o mesmo.
+			var _oppositeRole = 'target';
 
 			var $_ = $(this)
-			, $sv = Reusable.searchViewer
+			, $sv = Reusable.search_viewer_content
 			, _searchRole = $_.attr('for')
 			, _curRole = $sv.attr('for')
-			, _isActive = $sv.hasClass(activeClass);
+			, _isActive = Reusable.search_viewer.hasClass('search-viewer--active');
 
 			if(_searchRole === 'target')
 				_oppositeRole = 'origin';
@@ -164,65 +230,83 @@
 			// Fecha a aba de busca
 			if(_isActive && _curRole === _searchRole)
 			{
-				$sv.removeClass(activeClass);
-				$_.removeClass(btnActiveClass);
-				Reusable.searchViewer.children('.searchViewer__input').blur();
+				Util.closeSearchViewer();
 			}
 			else // Abre a aba de busca
 			{
-				var _curID = Reusable.searchForm.children('input.search-'+_searchRole).prop('value')
-				,_oppositeID = Reusable.searchForm.children('input.search-'+_oppositeRole).prop('value')
+				var _curID = Reusable.search_form.children('input.search-'+_searchRole).prop('value')
+				,_oppositeID = Reusable.search_form.children('input.search-'+_oppositeRole).prop('value')
 				, $curItem
-				, $searchList;
+				, $searchList = Reusable.search_viewer_content.children('.search-viewer__list')
+				, $searchInput = Reusable.search_viewer_content.children('.search-viewer__input');
 
 				if(_curID.length > 0)
-					$curItem = Reusable.searchViewer.find('.searchViewer__item[data-id="'+_curID+'"]');
+					$curItem = Reusable.search_viewer_content.find('.search-viewer__item[data-id="'+_curID+'"]');
 
 				if(_isActive)
 				{
 					// Se a aba já está aberta, vamos resetar o item selecionado.
 
 					// Remove o estado ativo do botão
-					Reusable.searchForm.children('.'+btnActiveClass).removeClass(btnActiveClass);
+					Reusable.search_form.children('.search__place--active').removeClass('search__place--active');
 				}
+
+				if($searchInput.prop('value').length)
+					$searchInput.prop('value', '').trigger('keyup');
+			
 				// Desmarca o item selecionado
-				Reusable.searchViewer
-				.find('.searchViewer__item--current')
-				.removeClass('searchViewer__item--current');
+				Reusable.search_viewer_content
+				.find('.search-viewer__item--current')
+				.removeClass('search-viewer__item--current');
 
 				if(_curID.length > 0)
-					$curItem.addClass('searchViewer__item--current');
+					$curItem.addClass('search-viewer__item--current');
 
-				$sv.attr('for', _searchRole);
-				$sv.addClass(activeClass);
-				$_.addClass(btnActiveClass);
+				Reusable.search_viewer.addClass('search-viewer--active');
+
+				$sv
+				.attr('for', _searchRole);
+
+				$_.addClass('search__place--active');
 
 				// Vamos fazer o scroll voltar à posição do item selecionado
 				if(_curID.length > 0)
 				{
 					if(!Visc.isVisible($curItem))
 					{
-						$searchList = Reusable.searchViewer.children('.searchViewer__list');
 						$searchList.animate(
 						{
 							scrollTop: $searchList.scrollTop() - $searchList.offset().top + $curItem.offset().top 
 						}, 200);
 					}
 				}
+				else
+					$searchList.animate({scrollTop:0},200);
 
-				Reusable.searchViewer
-				.find('.searchViewer__item--disabled')
-				.removeClass('searchViewer__item--disabled');
+				Reusable.search_viewer_content
+				.find('.search-viewer__item--disabled')
+				.removeClass('search-viewer__item--disabled');
 
-				Reusable.searchViewer
-				.find('.searchViewer__item[data-id="'+_oppositeID+'"]')
-				.addClass('searchViewer__item--disabled');
+				Reusable.search_viewer_content
+				.find('.search-viewer__item[data-id="'+_oppositeID+'"]')
+				.addClass('search-viewer__item--disabled');
 				
 				setTimeout(function()
 				{
-					Reusable.searchViewer.children('.searchViewer__input').focus();
+					$searchInput.focus();
 				}, 100);
 			}
+		},
+		closeSearchViewer: function($btn)
+		{
+			Reusable.search_form.find('.search__place--active').removeClass('search__place--active');
+
+			Reusable.search_viewer_content
+			.removeClass('search-viewer__content--active')
+			.children('.search-viewer__input')
+			.blur();
+
+			Reusable.search_viewer.removeClass('search-viewer--active');
 		},
 		fire: function(func, funcname, args) 
 		{
