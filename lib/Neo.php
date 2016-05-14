@@ -21,34 +21,14 @@ class Neo
 		return self::$client;
 	}
 
-	/*
-	public static function getCommonParents($nodeA_ID, $nodeB_ID)
-	{
-		$q = 'MATCH (n{id:"'.$nodeA_ID.'"})<-[r:PARENT_OF*]-(p)
-		RETURN p as parents
-		UNION
-		MATCH (m{id:"'.$nodeB_ID.'"})<-[r:PARENT_OF*]-(q)
-		RETURN q as parents';
-		$parentRecords = self::$client->run($q);
-		return array_map(function($o){return $o->value("parents")->value("id");}, $parentRecords->records());
-	}
-
-	public static function getSubgraphOfParents($parents)
-	{
-		$q = "MATCH (n)-[e]->(m)
-		WITH "."['".implode("','", $parents)."']"." AS parents, n, e, m
-		WHERE (n:Location AND (n.parent IN parents OR m.parent IN parents)) or (n:Generic AND n.id IN parents AND m.id IN parents)
-		RETURN n, m, e";
-		$subgraphRecord = self::$client->run($q);
-		return self::loadGraphSet(new Graph(), $subgraphRecord);
-	}
-	*/
-
 	public static function executeQuery($query, $limit = 400, $skip = 0)
 	{
 		$query = $query.' SKIP '.$skip.' '.'LIMIT '.$limit;
 		$result = self::$client->run($query);
-		p_dump($query);
+
+		if(DEBUG)
+			p_dump($query);
+
 		return $result;
 	}
 
@@ -56,31 +36,11 @@ class Neo
 	{
 		$q = 'match (n)-[e]->(m) RETURN n, m, e';
 
-		$nodeA_ID = $nodeA[0];
-		$nodeA_Type = $nodeA[1];
-
-		$nodeB_ID = $nodeB[0];
-		$nodeB_Type = $nodeB[1];
-
-
-		$parentA = explode("n", $nodeA_ID);
-		$parentB = explode("n", $nodeB_ID);
-
-		array_shift($parentA);array_shift($parentB);
-		array_pop($parentA);array_pop($parentB);
-
-		if(count($parentA)<1 && count($parentB)<1)
-		{
-			echo "TA QUERENDO ESTRAGAR O SITE, NÉ??";
-			exit;
-		}
-
-		// Determina o id dos pais do no A e B
-		$parentA = 'n'.implode("n",$parentA);
-		$parentB = 'n'.implode("n",$parentB);
+		$parentA = explode("n", $nodeA);
+		$parentB = explode("n", $nodeB);
 		
 		$q = '
-		MATCH (src{id:"'.$nodeA_ID.'"}),(tgt{id:"'.$nodeB_ID.'"})
+		MATCH (src{id:"'.$nodeA.'"}),(tgt{id:"'.$nodeB.'"})
 		WITH 
 		(CASE WHEN src:Location THEN src.parent ELSE src.id END) AS genericSrc
 		,(CASE WHEN tgt:Location THEN tgt.parent ELSE tgt.id END) AS genericTgt

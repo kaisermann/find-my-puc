@@ -18,10 +18,79 @@ body
 	background: colors.white
 	font-family Monospace, sans-serif
 	
+	> .spinner-wrapper
+		background-color: rgba(colors.darken-blue[5],.2)
+		
+		.spinner
+			size(10rem)
+				
+			&::after
+				background-color: colors.purple
+	
+	&.js--loading
+		.page-wrapper
+			opacity 0
+			visibility hidden
+			
+	
+.locked--search
+	.page-wrapper
+		overflow hidden
+		max-height 100vh
+		
+.js--loading
+	background
+	> .spinner-wrapper
+		opacity 1
+		visibility visible
+		
+
+.page-wrapper
+	transition opacity .3s ease, visibility .3s ease
+	
 // Elements
 a
 	&:hover
 		text-decoration none
+		
+.spinner-wrapper
+	background-color: rgba(colors.gray,.4)
+	position absolute
+	left 0
+	top 0
+	size(100%)
+	z-index 10
+	opacity 0
+	visibility hidden
+	transition .3s ease
+
+.spinner
+	size(5rem)
+	position fixed
+	margin auto
+	z-index 11
+	left 0
+	right 0
+	top 0
+	bottom 0
+	transition all .3s ease
+
+	&::before
+	&::after
+		content ''
+		position absolute
+		top 0
+		left 0
+		display block
+		size(100%)
+		border-radius 50%
+		background-color: colors.yellow
+		opacity 0.8
+		animation bounce 1.6s infinite ease-in-out
+
+	&::after
+		animation-delay -.8s
+		background-color: colors.darken-blue[3]
 	
 // Class Specific
 .img--responsive
@@ -31,8 +100,17 @@ a
 	
 // Animations
 		
-
 @keyframes fadeIn {
   from {  opacity: 0;  }
   to { opacity: 1; }
+}
+
+@keyframes bounce {
+	0%, 100% {
+		transform: scale(0.0);
+		-webkit-transform: scale(0.0);
+	} 50% {
+		transform: scale(1.0);
+		-webkit-transform: scale(1.0);
+	}
 }

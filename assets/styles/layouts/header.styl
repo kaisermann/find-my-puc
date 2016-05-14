@@ -33,6 +33,10 @@
 			background: colors.darken-blue[3]
 			color: colors.white
 			
+		&:active
+			span
+				transform scale(1.04)
+			
 		span
 			display block
 			transition .3s ease
@@ -52,6 +56,7 @@
 .search-viewer	
 	&__bg
 		position fixed
+		z-index 1
 		top 0
 		left 0
 		size(100%)
@@ -78,15 +83,15 @@
 	&__list
 		position relative
 		width 100%
-		overflow scroll
-		max-height calc(100% - 3.8rem)
+		overflow-y scroll
+		max-height calc(100% - 4.1rem)
 		line-height 1.2
 		z-index 2
 		
 	&__item
 		overflow hidden
-		transition max-height .35s ease, opacity .2s ease, background .2s ease
 		cursor pointer
+		transition background .2s ease
 		max-height 12rem
 		opacity 1
 		border-bottom: 1px solid colors.lighten-gray[5]
@@ -172,12 +177,6 @@
 		font-size 1.4rem
 		background-color: colors.darken-gray[3]
 		
-		.form-control--radio
-			font-size 1.4rem
-			
-			label::before
-				size(1.6rem)
-		
 	&__item
 		margin-top 1rem
 
@@ -185,6 +184,17 @@
 	#header
 		position fixed
 		size(sizes.aside, 100vh)
+			
+	.filters			
+		&__section			
+			.form-control--radio
+				font-size 1.4rem
+				
+				label::before
+					size(1.6rem)
+		
+	.search-viewer__item
+		transition max-height .35s ease, opacity .2s ease, background .2s ease
 		
 +below(sm)
 	#header
@@ -202,8 +212,11 @@
 			right 1.5rem
 			border-right 0
 			
+		&__no-results
+			top 9rem
+			
 		&__list
-			max-height calc(100% - 3.8rem)
+			max-height calc(100% - 4.1rem - 4.6rem)
 			
 		&__close-btn
 			display block
@@ -212,3 +225,12 @@
 			.search-viewer__content
 				left 1.5rem
 				top 50%
+				
+	.filters__section
+		margin 1.5rem 1.0rem
+		
++below(sm, orientation: landscape)
+	.search-viewer
+		&__content
+			max-height 25rem
+			

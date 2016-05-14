@@ -74,7 +74,8 @@ class Graph
 			$key = array_search('PARENT_OF', $params["ignore"]["edge"]["type"]);
 			unset($params["ignore"]["edge"]["type"][$key]);
 		}
-		p_dump($params);
+		if(DEBUG)
+			p_dump($params);
 
 		$ignorableEntities = isset($params["ignore"]) ? $params["ignore"] : [];
 		$ignorableAttributes = [];

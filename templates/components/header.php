@@ -4,12 +4,12 @@
 		<strong><?php Main::getAppName(true); ?></strong>
 	</div>
 	<div class="header__search">
-		<form action="" id="search-form">
-			<label for="origin" class="btn search__place">
+		<form id="search-form">
+			<label for="origem" class="btn search__place ">
 				<span class="search__label">Origem</span>
 				<span class="search__value"></span>
 			</label>
-			<label for="target" class="btn search__place h--mg-t-5">
+			<label for="destino" class="btn search__place h--mg-t-5">
 				<span class="search__label">Destino</span>
 				<span class="search__value"></span>
 			</label>
@@ -17,23 +17,23 @@
 				<span class="filters__title"><strong>Filtros</strong></span>
 				<div class="filters__section">
 					<span class="filters__section__title"><strong>Desconsiderar</strong></span>
-					<?php $filters = [["STAIR_CONNECTION","Escadas","stair"],["LIFT_CONNECTION","Elevadores","lift"]]; ?>
+					<?php $filters = [['STAIR_CONNECTION','Escadas','stair'],['LIFT_CONNECTION','Elevadores','lift']]; ?>
 					<?php foreach($filters as $filter): ?>
-						<?php $filterArray = isset($Request['filter-pathway']) ? $Request['filter-pathway'] : []; ?>
+						<?php $filterArray = isset($Request['desconsiderar']) ? $Request['desconsiderar'] : []; ?>
 						<div class="filters__item">
 							<span class="form-control form-control--radio">
-								<input type="checkbox" name="filter-pathway[]" class="js-radio" id="filter-pathway-<?php echo $filter[2]; ?>" value="<?php echo $filter[0]; ?>" <?php echo ((in_array($filter[0],$filterArray))?'checked':''); ?>>
-								<label for="filter-pathway-<?php echo $filter[2]; ?>"><?php echo $filter[1]; ?></label>
+								<input type="checkbox" name="desconsiderar[]" class="js-radio" id="desconsiderar-<?php echo $filter[2]; ?>" value="<?php echo $filter[0]; ?>" <?php echo ((in_array($filter[0],$filterArray))?'checked':''); ?>>
+								<label for="desconsiderar-<?php echo $filter[2]; ?>"><?php echo $filter[1]; ?></label>
 							</span>
 						</div>
 					<?php endforeach; ?>
 				</div>
 			</div>
-			<button for="target" class="btn btn--submit h--mg-t-5">
-				Me ajuda!
+			<button class="btn btn--scale btn--submit h--mg-t-5">
+				<span>Me ajuda!</span>
 			</button>
-			<input type="hidden" name="origin" class="search-origin">
-			<input type="hidden" name="target" class="search-target">
+			<input type="hidden" name="origem" class="search-origem">
+			<input type="hidden" name="destino" class="search-destino">
 		</form>
 	</div>
 </aside>
@@ -69,7 +69,7 @@
 					}
 					$names[$i] = strtolower($names[$i]);
 				}
-				echo '<li class="search-viewer__item" data-id="'.$id.'" data-names="'.implode('|', $names).'"><span class="search-viewer__item__content">';
+				echo '<li class="search-viewer__item" data-slug="'.slugify($finalNames[0]).'" data-id="'.$id.'" data-names="'.implode('|', $names).'"><span class="search-viewer__item__content">';
 				echo '<span class="search-viewer__item__name">'.$finalNames[0].'</span>';
 				if($n_names>1)
 				{

@@ -1,6 +1,16 @@
 #main
 	padding 2rem 4.0rem
 	overflow hidden
+	min-height 100vh
+	position relative
+	
+.main
+	&__content
+		transition opacity .3s ease
+		opacity 1
+		&--hidden
+			opacity 0
+	
 	
 +above(md)
 	#main

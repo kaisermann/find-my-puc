@@ -1,4 +1,7 @@
 /* global Visc */
+/* global ajax_url */
+/* global base_url */
+/* global Tiq */
 'use strict';
 
 (function($) 
@@ -10,18 +13,8 @@
 	, Util
 	, Tools
 	, Reusable
-	, QueryString;
-
-	String.prototype.replaceArray = function(find, replace) {
-		var replaceString = this;
-		var regex; 
-		for (var i = 0; i < find.length; i++) {
-			regex = new RegExp(find[i], "g");
-			replaceString = replaceString.replace(regex, replace[i]);
-		}
-		return replaceString;
-	};
-
+	, Url
+	, Attributes;
 
 	var sanitizeAlphabet = 
 	{
@@ -36,12 +29,25 @@
 		, 'professora?': 'prof'
 	};
 
+	Url =
+	{
+		Query: '',
+		Parameters: '',
+		Hash: ''
+	};
+
 	// ------- //
+	Attributes = 
+	{
+		isLoading: {'body':true, 'main': false},
+		shouldSearch: false
+	};
 
 	Reusable = 
 	{
 		search_form: $('#search-form'),
-		search_viewer: $('.search-viewer')
+		search_viewer: $('.search-viewer'),
+		main: $('#main')
 	};
 
 	Reusable.search_viewer_content = Reusable.search_viewer.children('.search-viewer__content');
@@ -53,10 +59,24 @@
 		{
 			init: function()
 			{
-				QueryString = Tools.parseQueryString(window.location.search);
+				Url.Query = Tools.parseQueryString(window.location.search, true);
+				Url.Parameters = Tools.parseUrlParams(window.location.pathname);
+
+				Util.genericHandlers();
 				Util.searchHandler();
 			},
-			end: function(){}
+			end: function()
+			{
+				new Tiq()
+				.add(300, function() 
+				{
+					console.log('remove');
+					Util.setLoading(false, $(d.body), 'body'); 
+					if(Attributes.shouldSearch)
+						Reusable.search_form.trigger('submit');
+				})
+				.run();
+			}
 		}
 	};
 
@@ -69,20 +89,54 @@
 
 			return str;
 		},
-		parseQueryString: function(qstr)
+		parseQueryString: function(qstr, removeFirst)
 		{
-			var query = {};
-			var a = qstr.substr(1).split('&');
-			for (var i = 0; i < a.length; i++) {
-				var b = a[i].split('=');
-				query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || '');
+			var _query = {}
+			, _a = qstr.substr(removeFirst ? 1 : 0).split('&');
+
+			for (var i = 0; i < _a.length; i++)
+			{
+				var _b = _a[i].split('=');
+				_query[decodeURIComponent(_b[0])] = decodeURIComponent(_b[1] || '');
 			}
-			return query;
+
+			return _query;
 		},
+		parseUrlParams: function(str)
+		{
+			var _ret = []
+			, _params = str.split('/');
+
+			for(var i = 0; i < _params.length; i++)
+			{
+				switch(_params[i])
+				{
+					case 'origem':
+					case 'destino':
+					_ret[_params[i]] = _params[i+1];
+					i++;
+					break;
+				}
+			}
+			return _ret;
+		}
 	};
 
 	Util = 
 	{
+		genericHandlers: function()
+		{
+			$(window).on('keyup', function(e)
+			{
+				var _code = e.keyCode;
+
+				if(_code===27)
+				{
+					if(d.body.classList.contains('locked--search'))
+						Util.closeSearchViewer();
+				}
+			});
+		},
 		searchHandler: function()
 		{
 			var $searchInput = Reusable.search_viewer_content.children('.search-viewer__input')
@@ -101,6 +155,9 @@
 
 			$searchInput.on('keyup', function(e)
 			{
+				if(e.keyCode!==8 && e.keyCode<33)
+					return;
+
 				var $_= $(this);
 				var _searchParam = Tools.sanitize($_.prop('value').toLowerCase());
 
@@ -181,21 +238,67 @@
 
 			});
 
-			["origin","target"].forEach(function(val)
+			Reusable.search_form.on('submit', function(e)
 			{
-				if(QueryString[val])
+				e.preventDefault();
+				var $_ = $(this);
+
+				var _origemID = $_.children('.search-origem').prop('value');
+				var _destinoID = $_.children('.search-destino').prop('value');
+
+				var _readyToSubmit = _origemID.length > 0 && _destinoID.length > 0;
+
+				if(_readyToSubmit && !Attributes.isLoading.main)
 				{
-					var _name = $searchItems
-					.filter('[data-id="'+QueryString[val]+'"]')
-					.find('.search-viewer__item__name')
-					.text();
+					Util.closeSearchViewer();
+
+					var _itemSlug = {};
+
+					_itemSlug.origem = $searchItems
+					.filter('li[data-id="'+_origemID+'"]')
+					.attr('data-slug');
+
+					_itemSlug.destino =  $searchItems
+					.filter('li[data-id="'+_destinoID+'"]')
+					.attr('data-slug');
+
+					var _serialized = $_.serialize();
+					var _formParams = Tools.parseQueryString(_serialized, false);
+					var slug = 'origem/'+_itemSlug.origem+'/destino/'+_itemSlug.destino+'/';
+					var _formParamsStr;
+
+					
+					delete _formParams.origem;
+					delete _formParams.destino;
+
+					_formParamsStr = $.param(_formParams);
+
+					if(_formParamsStr.length>0)
+						slug += '?' + _formParamsStr;
+
+					Util.loadPage(ajax_url
+						,'action=findRoute&'+_serialized
+						, slug);
+				}
+			});
+
+			['origem','destino'].forEach(function(val)
+			{
+				var curSlug = Url.Query[val] || Url.Parameters[val];
+
+				Attributes.shouldSearch = Attributes.shouldSearch || !!curSlug;
+
+				if(curSlug)
+				{
+					var $item = $searchItems.filter('[data-slug="'+curSlug+'"]');
+					var _name = $item.find('.search-viewer__item__name').text();
 
 					Reusable.search_form.children('label[for="'+val+'"]')
 					.addClass('search__place--done')
 					.children('.search__value')
 					.text(_name);
 
-					Reusable.search_form.children('input.search-'+val).prop('value', QueryString[val]);
+					Reusable.search_form.children('input.search-'+val).prop('value', $item.attr('data-id'));
 				}
 			});
 
@@ -216,7 +319,7 @@
 			e.preventDefault();
 
 			// Opposite Role para pegarmos o ID do outro termo e não deixarmos escolher o mesmo.
-			var _oppositeRole = 'target';
+			var _oppositeRole = 'destino';
 
 			var $_ = $(this)
 			, $sv = Reusable.search_viewer_content
@@ -224,8 +327,8 @@
 			, _curRole = $sv.attr('for')
 			, _isActive = Reusable.search_viewer.hasClass('search-viewer--active');
 
-			if(_searchRole === 'target')
-				_oppositeRole = 'origin';
+			if(_searchRole === 'destino')
+				_oppositeRole = 'origem';
 
 			// Fecha a aba de busca
 			if(_isActive && _curRole === _searchRole)
@@ -253,7 +356,7 @@
 
 				if($searchInput.prop('value').length)
 					$searchInput.prop('value', '').trigger('keyup');
-			
+
 				// Desmarca o item selecionado
 				Reusable.search_viewer_content
 				.find('.search-viewer__item--current')
@@ -268,6 +371,7 @@
 				.attr('for', _searchRole);
 
 				$_.addClass('search__place--active');
+				$(d.body).addClass('locked--search');
 
 				// Vamos fazer o scroll voltar à posição do item selecionado
 				if(_curID.length > 0)
@@ -306,7 +410,58 @@
 			.children('.search-viewer__input')
 			.blur();
 
+			$(d.body).removeClass('locked--search');
+
 			Reusable.search_viewer.removeClass('search-viewer--active');
+		},
+		loadPage: function(url, data, slug, callback, errorCallback)
+		{
+			Util.setLoading(true);
+
+			if(slug)
+				history.replaceState(null, null, base_url + slug);
+
+			console.log(url + '?' + data);
+			$.get({
+				url: url,
+				data: data,
+				error: function(e)
+				{ 
+					if(!!errorCallback && typeof errorCallback === 'function')
+						errorCallback.apply(this, [e]);
+					//console.log(e);
+				},
+				success: function(response)
+				{
+					var $mainContent = Reusable.main.children('.main__content');
+
+					Util.setLoading(false);
+					$mainContent.addClass('main__content--hidden');
+					setTimeout(function()
+					{
+						$mainContent.html(response).removeClass('main__content--hidden');
+					},310);
+
+					if(!!callback && typeof callback === 'function')
+						callback.apply(this, [response]);
+				}
+			});
+		},
+		setLoading: function(shouldLoad, wrapper, loadingClass)
+		{
+			var $wrapper = wrapper || Reusable.main;
+
+			Attributes.isLoading[loadingClass] = shouldLoad;
+			if(shouldLoad)
+			{
+				$wrapper.append('<div class="spinner-wrapper"><div class="spinner"></div></div>');
+				setTimeout(function(){ $wrapper.addClass('js--loading'); }, 10);				
+			}
+			else
+			{
+				$wrapper.removeClass('js--loading');
+				setTimeout(function(){$wrapper.children('.spinner-wrapper').remove(); }, 310);
+			}
 		},
 		fire: function(func, funcname, args) 
 		{

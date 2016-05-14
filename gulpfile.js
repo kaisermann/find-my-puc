@@ -68,10 +68,7 @@ var cssTasks = function(filename)
 	})
 	.pipe(_.concat, filename)
 	.pipe(_.autoprefixer, { browsers: config.prefixes })
-	.pipe(function()
-	{
-		return _.gulpif(!CLIOpts.assetdebug, _.cmq({beautify:false}));
-	})	
+	.pipe(_.cmq, {beautify:true})	
 	.pipe(function()
 	{
 		return _.gulpif(!CLIOpts.assetdebug, _.cssnano());
@@ -197,9 +194,6 @@ gulp.task('clean', _.del.bind(null, [paths.dist]));
 
 gulp.task('watch', function() 
 {
-	//if(!CLIOpts.rev)
-	//	_.del('./' + paths.dist + 'assets.json');
-
 	if(CLIOpts.sync)
 	{
 		_.browserSync.init(
