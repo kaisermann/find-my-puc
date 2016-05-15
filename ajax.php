@@ -9,7 +9,7 @@ class AjaxCall
 		if(!isset($r['action']))
 			die('0');
 
-		@call_user_func([$this,$r['action']]);
+		call_user_func([$this,$r['action']]);
 	}
 
 	function findRoute()
@@ -34,19 +34,31 @@ class AjaxCall
 				}
 			}
 
-			elapsetime("SUBGRAPH_TOTAL");
-			elapsetime("SUBGRAPH_generation");
+			if(DEBUG)
+			{
+				elapsetime("SUBGRAPH_TOTAL");
+				elapsetime("SUBGRAPH_generation");
+			}
+			
 			$g = Neo::getSubgraph($originNode,$targetNode);
-			elapsetime("SUBGRAPH_generation");
+			
+			if(DEBUG)
+			{
+				elapsetime("SUBGRAPH_generation");
+				elapsetime("SUBGRAPH_pathFinding");
+			}
 
-			elapsetime("SUBGRAPH_pathFinding");
 			$n1 = $g->getNode($originNode);
 			$n2 = $g->getNode($targetNode);
-			$path = $g->getPathBetween($n1, $n2, $params);
-			//p_dump($path);
-			elapsetime("SUBGRAPH_pathFinding");
-			elapsetime("SUBGRAPH_TOTAL");
-			$g->printPath($path);
+			$GLOBALS['route'] = $g->getPathBetween($n1, $n2, $params);
+
+			if(DEBUG)
+			{
+				elapsetime("SUBGRAPH_pathFinding");
+				elapsetime("SUBGRAPH_TOTAL");
+			}
+
+			getTemplatePart('layout/templates/route');
 
 			if(DEBUG)
 			{
@@ -67,7 +79,6 @@ class AjaxCall
 				elapsetime("GRAPH_pathFinding");
 				elapsetime("GRAPH_TOTAL");
 				$g->printPath($path);
-
 
 				printElapsedTimes(["SUBGRAPH_ALLPATHS","SUBGRAPH_QUERY_GENERIC","SUBGRAPH_QUERY_LOCATIONS"]);
 				printElapsedTimes(["SUBGRAPH_pathFinding","GRAPH_pathFinding"]);

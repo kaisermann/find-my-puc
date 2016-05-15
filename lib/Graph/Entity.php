@@ -25,4 +25,6 @@ class Entity
 	}
 
 	public function printAttrs($identation = 0) { arrayPrint($this->attributes, $identation); return $this; }
+	
+	public function __debugInfo() { $this->printMe(); }
 }

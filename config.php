@@ -13,6 +13,11 @@ define('NODE_PARENT_ID', 'parent');
 define('EDGE_WEIGHT_ID', 'weight');
 define('EDGE_DIRECTION_ID', 'dir');
 
+define('DIR_FOWARD', 1);
+define('DIR_BACKWARD', 5);
+define('DIR_RIGHT', 3);
+define('DIR_LEFT', 7);
+
 define('PAGE_ID', 'id');
 
 define('PROTOCOL', 'http://');

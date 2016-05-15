@@ -234,6 +234,8 @@
 					.removeClass('search-viewer__item--current');
 
 					$_.addClass('search-viewer__item--current');
+
+					Util.closeSearchViewer();
 				}
 
 			});

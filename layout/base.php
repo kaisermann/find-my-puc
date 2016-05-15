@@ -1,8 +1,8 @@
-<?php getTemplatePart("templates/components/head"); ?>
+<?php getTemplatePart("layout/components/head"); ?>
 
 <body class="js--loading <?php body_class(); ?>">
 	<div class="page-wrapper">
-		<?php getTemplatePart("templates/components/header"); ?>
+		<?php getTemplatePart("layout/components/header"); ?>
 		<main id="main">
 			<div class="main__content">
 				<?php 
@@ -21,9 +21,10 @@
 					break;
 				}
 
-				getTemplatePart('templates/pages/'.$layout.'');
+				getTemplatePart('layout/pages/'.$layout.'');
 				?>
-				<?php getTemplatePart('templates/components/footer'); ?>
+				
+				<?php getTemplatePart('layout/components/footer'); ?>
 			</div>
 		</main>
 	</div>

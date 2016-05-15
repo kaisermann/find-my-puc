@@ -10,10 +10,8 @@ class Graph
 	private $nodeCount = 0;
 	private $edgeCount = 0;
 
-	public function __CONSTRUCT()
-	{
-	}
-
+	public function __CONSTRUCT() {}
+	
 	public function getNode($id)
 	{
 		return getKeyValue($this->nodes,$id);
@@ -103,34 +101,35 @@ class Graph
 			if ($curNode === $finishID)
 			{
 				// Sim!
-				$path["steps"] = [];
-				$path["raw"] = [];
-				$path["weight"] = 0;
+				$route = new Route();
+				$route->nodes = [];
+				$route->length = 0;
+
 				while ($previous[$curNode])
 				{
 					$nextID = $curNode;
 					$nextNode = $this->getNode($nextID);
-					$curEdge = $previous[ $curNode ]["edge"];
+					$curEdge = $previous[$curNode]["edge"];
 
-					$path["raw"][] = $this->getNode($nextID);
-					$path["raw"][] = $curEdge;
+					$route->nodes[] = $this->getNode($nextID);
+					$route->nodes[] = $curEdge;
 					// Se for uma conexão valida, adicionar ao peso
 					$curEdgeType = $curEdge->getAttr("type");
 					if($curEdgeType == 'REGULAR_CONNECTION' || $curEdgeType == 'STAIR_CONNECTION')
 					{
-						$path["weight"] += $curEdge->getAttr("weight");
+						$route->length += $curEdge->getAttr("weight");
 					}
 
 					$curNode = $previous[ $curNode ]["node"];
 					$prevID = $curNode;
 					$prevNode = $this->getNode($prevID);
 
-					$path["steps"][] = ["source" => $prevNode, "target" => $nextNode, "edge" => $curEdge];
+					$route->steps[] = ["source" => $prevNode, "target" => $nextNode, "edge" => $curEdge];
 				}
-				$path["raw"][] =  $this->getNode($startID);
-				$path["raw"] = array_reverse($path["raw"]);
-				$path["steps"] = array_reverse($path["steps"]);
-				return $path;
+				$route->nodes[] =  $this->getNode($startID);
+				$route->nodes = array_reverse($route->nodes);
+				$route->steps = array_reverse($route->steps);
+				return $route;
 			}
 
 			// Não encontrou caminho algum
@@ -206,30 +205,8 @@ class Graph
 		return NULL;
 	}
 
-	public function printPath($path)
-	{
-		$countpath = count($path["raw"]);
-		for($i = 0; $i < $countpath; $i+=2)
-		{
-			echo $path["raw"][$i]->getFullName();
-			//echo "<br />";
-			//if($i+1<$countpath)
-			//	echo $path["raw"][$i+1]->getEdgeUniqueID();
-			echo "<br /><br />";
-		}
-
-		echo "steps:<br /><br />";
-		foreach($path["steps"] as $step)
-		{
-			continue;
-			echo $step["source"]->getFullName()."<br />";
-			echo $step["edge"]->getEdgeUniqueID()." [".$step["edge"]->getAttr("type")."] [".$step["edge"]->getAttr("weight")."]<br />";
-			echo $step["target"]->getFullName()."<br />";
-			echo "<br /><br />";
-		}
-		echo "size: ".$path["weight"]." passos<br /><br /> ";
-	}
-
+	public function __debugInfo() { $this->printMe(); }
+	
 	public function printMe()
 	{
 		echo "-[GRAPH]<br />";

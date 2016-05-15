@@ -68,21 +68,6 @@ class Neo
 		return $graph;
 	}
 
-	public static function getGenericGraph()
-	{
-		$q = 'match (n:Generic)-[e:CONNECTED_TO]->(m:Generic) RETURN n, m, e';
-		$limit = 400;
-		$counter = 0;
-		$parentGraph = new Graph();
-		do {
-			$set = self::executeQuery($q, $limit, $counter);
-			self::loadGraphSet($parentGraph, $set->records());
-			$counter += $limit;
-		} while ($set->size() == $limit);
-
-		return $parentGraph;
-	}
-
 	public static function populateGraph($graph)
 	{
 		elapsetime("GRAPH_QUERY");
@@ -129,7 +114,8 @@ class Neo
 			$edgeEntity = $nodeRecord->value("e");
 			$edgeProps = $edgeEntity->values();
 			$edgeProps['type'] = $edgeEntity->type();
-			$graph->createEdgeBetween($nodes['n'], $nodes['m'], $edgeProps);
+			
+			$graph->createEdgeBetween($nodes['m'], $nodes['n'], $edgeProps);
 		}
 		return $graph;
 	}

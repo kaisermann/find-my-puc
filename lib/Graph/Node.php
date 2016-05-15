@@ -20,7 +20,7 @@ class Node extends Entity
 	public function getSubType() { return $this->getAttr("subtype"); }
 
 	public function getFullName() { return $this->getAttr(NODE_NAMES_ID)[0]." - ".$this->getAttr(NODE_UNIQUE_ID); }
-
+	
 	public function printMe($identation = 0)
 	{
 		echo str_repeat("--", $identation + 1). "[NODE]<br />";
