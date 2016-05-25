@@ -1,10 +1,11 @@
-.route
+.route	
 	&__step
 		display flex
-		align-items flex-start
+		align-items center
+		width 100%
 			
 		& + &
-			margin-top rem(30px)
+			margin-top 3rem
 				
 		&[dir-type='hard']
 			.route__step-direction
@@ -17,8 +18,12 @@
 					
 			.route__step-verbose-direction
 				background-color: colors.darken-red[2]
-						
+			
 
+		for i in (2..8)
+			&[dir=\'{i}\']
+				.route__step-direction
+					transform rotateZ(((i - 1) * 45)deg)
 		&-left
 			width 4.2rem
 			min-height 4.2rem
@@ -53,19 +58,18 @@
 				bottom .7rem
 				left 50%
 				transform translateX(-50%)
-				
-			for i in (2..8)
-				&[dir=\'{i}\']
-					transform rotateZ(((i - 1) * 45)deg)
-					
-			&-wrapper
-				& + & 
-					margin-top 1.5rem
 			
 		&-label
 			display block
-			background-color: colors.darken-yellow[2]
 			padding 1rem 1.5rem
+			
+			&:not(:last-of-type)
+				border-bottom: 1px solid colors.darken-yellow[1]
+			
+			&--big
+				padding 2rem 3rem
+				width 100%
+				text-align center
 
 				
 		&-steps
@@ -80,6 +84,7 @@
 	
 		&-right
 			margin-left 2.5rem
+			width 100%
 			
 		&-nodes
 			//padding 1.5rem 3rem
@@ -99,6 +104,9 @@
 
 			&--between
 				background-color: colors.lighten-gray[7]
+				
+				.route__step-label
+					background-color: colors.darken-yellow[2]
 				
 		&-between
 			&__list
@@ -141,7 +149,10 @@
 
 
 
-
++above(md)
+	.route
+		max-width 50rem
+		margin 0 0 auto 
 
 
 

@@ -24,8 +24,8 @@ class Node extends Entity
 	
 	public function printMe($identation = 0)
 	{
-		echo $this->getFullName();
-		return $this;
+		//echo $this->getFullName();
+		//return $this;
 		echo str_repeat("--", $identation + 1). "[NODE]<br />";
 		$this->printAttrs($identation + 2);
 		echo str_repeat("--", $identation + 3). count($this->edges). " Edges<br />";

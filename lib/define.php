@@ -33,10 +33,10 @@ if(PUBLIC_DEV)
 }
 else
 {
-	define('ROOT_DIR', PROTOCOL.'localhost/findmypuc');
+	define('ROOT_DIR', PROTOCOL.'10.0.0.10/findmypuc');
 }
 
-define('DEBUG', true);
+define('DEBUG', false);
 define('MINIFY_HTML', false);
 
 /* Globals */

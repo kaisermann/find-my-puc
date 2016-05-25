@@ -4,7 +4,7 @@
 	<div class="route">
 		<?php 
 		$n_steps = count($route->steps); 
-		$i_curStep = -1;
+		$curStep = -1;
 		$routeSteps = [];
 		?>
 		<?php for($i = 0; $i < $n_steps; $i++): ?>
@@ -14,7 +14,7 @@
 			$dir = NULL;
 			$isPassage = false;
 			$curEdge = $step['edge'];
-			$dirType = NULL;
+			$dirType = 'soft';	
 
 			$isPassage = ($curEdge->getType()=='STAIR_CONNECTION' || $curEdge->getType()=='LIFT_CONNECTION' || $curEdge->getType()=='PARENT_OF');
 
@@ -23,44 +23,45 @@
 				if($i>0 && $prev['edge']->getDirection()!=NULL)
 				{
 					$dir = Route::getDirection($curEdge->getDirection(),$prev['edge']->getDirection());
-					$dirType = 'soft';	
 				}
 				else
 				{
-					$dir = $curEdge->getDirection();
-					$dirType = 'hard';
+					$exitDir = $step['source']->getAttr('exit_dir');
+					if(isset($exitDir))
+					{
+						$dir = Route::getDirection($curEdge->getDirection(), $exitDir);
+					}
+					else
+					{
+						$dir = $curEdge->getDirection();
+						$dirType = 'hard';
+					}
 				}
 			}
-			$stepSrc = $step['source'];
-			$stepTgt = $step['target'];
 
-			if(!($stepSrc->getType() == 'waypoint' && $prev['target']->getType() == 'waypoint'))
+			// <= 0 para nao considerar direção hard e soft iguais em uma mesma etapa
+			if($curStep <= 0 || $routeSteps[$curStep]['dir']!=$dir)
 			{
-				if($i_curStep == -1 || $routeSteps[$i_curStep]['dir']!=$dir)
-				{
-					$routeSteps[++$i_curStep] = [];
-					$routeSteps[$i_curStep]['nodes'] = [];
-					$routeSteps[$i_curStep]['weight'] = [];
-					$routeSteps[$i_curStep]['dir'] = [];
-				}
-				$routeSteps[$i_curStep]['dir-type'] = $dirType;
+				$routeSteps[++$curStep] = [];
+				$routeSteps[$curStep]['nodes'] = [];
+				$routeSteps[$curStep]['weight'] = 0;
 			}
 
-			if(end($routeSteps[$i_curStep]['dir']) != $dir)
-			{
-				$routeSteps[$i_curStep]['dir'][] = $dir;
-				$routeSteps[$i_curStep]['weight'][] = 0;
-			}
+			$routeSteps[$curStep]['dir-type'] = $dirType;
+			$routeSteps[$curStep]['dir'] = $dir;
 
-			$routeSteps[$i_curStep]['nodes'][$stepSrc->id()] = $stepSrc;//$stepSrc;
-			$routeSteps[$i_curStep]['nodes'][$stepTgt->id()] = $stepTgt;//$stepTgt;
-
-			$i_weight = count($routeSteps[$i_curStep]['weight']) - 1;
+			$routeSteps[$curStep]['nodes'][$step['source']->id()] = $step['source'];//$step['source'];
+			$routeSteps[$curStep]['nodes'][$step['target']->id()] = $step['target'];//$step['target'];
 
 			if($curEdge->getType()=='REGULAR_CONNECTION' || $curEdge->getType()=='STAIR_CONNECTION')
-				$routeSteps[$i_curStep]['weight'][$i_weight] += $curEdge->getAttr("weight");
+				$routeSteps[$curStep]['weight'] += $curEdge->getAttr("weight");
 			else
-				$routeSteps[$i_curStep]['weight'][$i_weight] = NULL;
+				$routeSteps[$curStep]['weight'] = NULL;
+
+			if($curEdge->getType()=='STAIR_CONNECTION' || $curEdge->getType()=='LIFT_CONNECTION')
+				$routeSteps[$curStep]['type'] = 'FLOOR_CHANGE';
+			else
+				$routeSteps[$curStep]['type'] = 'REGULAR_CONNECTION';
 
 			if(DEBUG)
 			{
@@ -75,7 +76,7 @@
 			}
 			?>
 		<?php endfor; ?>
-		<?php if(DEBUG) p_dump($routeSteps); ?>
+		<?php $tmpList = []; ?>
 		<?php foreach($routeSteps as $step): ?>
 			<?php 
 			$step['nodes'] = array_values($step['nodes']);
@@ -84,68 +85,80 @@
 			$target = $step['nodes'][$lastIndex];
 			$inBetweenList = array_slice($step['nodes'], 1, $lastIndex-1);
 
-
 			?>
-			<div class="route__step" dir-type="<?php echo $step['dir-type']; ?>">
-				<div class="route__step-left" >
-					<?php $n_dir = count($step['dir']); ?>
-					<?php for($i = 0; $i < $n_dir; $i++): ?>
-						<div class="route__step-direction-wrapper">
-							<span class="route__step-direction" dir="<?php echo $step['dir'][$i]; ?>"></span>
-							<span class="route__step-steps"><?php echo $step['weight'][$i]; ?></span>
-						</div>
-					<?php endfor; ?>
+			<?php if($step['type'] == 'FLOOR_CHANGE'): ?>
+				<div class="route__step">
+					<div class="route__step-label route__step-label--big h-bg--green">
+						<?php echo '<strong>Troca de andar</strong>';?>
+					</div>
 				</div>
-				<div class="route__step-right">
-					<?php if($step['dir']): ?>
-						<div class="route__step-label route__step-verbose-direction">
-							<?php if($step['dir-type']==='hard')
-							echo 'Olhando para Norte siga ';
-							else 
-								echo 'Siga ';
-							echo Route::translateDirection($step['dir'], true); 
-							?>
-						</div>
-					<?php endif; ?>
-					<div class="route__step-nodes">
-						<div class="route__step-label route__step-row route__step-row--origin">
-							<?php echo '<strong>De:</strong> '. $origin->getNames()[0]; ?>
-						</div>
-						<?php $n_inBetween = count($inBetweenList); ?>
-						<?php if($n_inBetween>0): ?>
-							<div class="route__step-row route__step-row--between">
-								<span class="route__step-label"><strong>Passando por:</strong></span>
-								<div class="route__step-between__nodes">
-									<div class="route__step-between__node route__step-between__node--first">
-										<?php echo $inBetweenList[0]->getNames()[0]; ?>
-									</div>
-									<?php $tmpInBetweenList = array_slice($inBetweenList, 1, $n_inBetween-2) ?>
-									<?php if(count($tmpInBetweenList)>0): ?>
-										<div class="route__step-between__list-wrapper">
-											<div class="route__step-between__list">
-												<?php foreach($tmpInBetweenList as $inBetween): ?>
-													<div class="route__step-between__node">
-														<?php echo $inBetween->getNames()[0]; ?>
-													</div>
-												<?php endforeach; ?>
-											</div>
-										</div>
-									<?php endif; ?>
-
-									<?php if($n_inBetween>1): ?>
-										<div class="route__step-between__node route__step-between__node--last">
-											<?php echo $inBetweenList[$n_inBetween-1]->getNames()[0]; ?>
-										</div>
-									<?php endif; ?>
-								</div>
+			<?php else: ?>
+				<div class="route__step" dir="<?php echo $step['dir']; ?>" dir-type="<?php echo $step['dir-type']; ?>">
+					<div class="route__step-left">
+						<span class="route__step-direction"></span>
+						<span class="route__step-steps"><?php echo $step['weight']; ?></span>
+					</div>
+					<div class="route__step-right">
+						<?php if($step['dir']): ?>
+							<div class="route__step-label route__step-verbose-direction">
+								<?php if($step['dir-type']==='hard')
+								echo 'Olhando para Norte siga ';
+								else 
+									echo 'Siga ';
+								echo Route::translateDirection($step['dir'], true); 
+								?>
 							</div>
 						<?php endif; ?>
-						<div class="route__step-label route__step-row route__step-row--target">
-							<?php echo '<strong>Até</strong>: '. $target->getNames()[0]; ?>
+						<div class="route__step-nodes">
+							<?php if($origin->getType()!='waypoint'): ?>
+								<div class="route__step-label route__step-row route__step-row--origin">
+									<?php echo '<strong>De:</strong> '. $origin->getNames()[0]; ?>
+								</div>
+							<?php endif; ?>
+							<?php 
+							$inBetweenList = array_filter($inBetweenList, function($var)
+							{
+								return $var->getType()!='waypoint';
+							});
+							$n_inBetween = count($inBetweenList); 
+							?>
+							<?php if($n_inBetween>0): ?>
+								<div class="route__step-row route__step-row--between">
+									<span class="route__step-label"><strong>Passando por:</strong></span>
+									<div class="route__step-between__nodes">
+										<div class="route__step-between__node route__step-between__node--first">
+											<?php echo $inBetweenList[0]->getNames()[0]; ?>
+										</div>
+										<?php $tmpInBetweenList = array_slice($inBetweenList, 1, $n_inBetween-2) ?>
+										<?php if(count($tmpInBetweenList)>0): ?>
+											<div class="route__step-between__list-wrapper">
+												<div class="route__step-between__list">
+													<?php foreach($tmpInBetweenList as $inBetween): ?>
+														<div class="route__step-between__node">
+															<?php echo $inBetween->getNames()[0]; ?>
+														</div>
+													<?php endforeach; ?>
+												</div>
+											</div>
+										<?php endif; ?>
+
+										<?php if($n_inBetween>1): ?>
+											<div class="route__step-between__node route__step-between__node--last">
+												<?php echo $inBetweenList[$n_inBetween-1]->getNames()[0]; ?>
+											</div>
+										<?php endif; ?>
+									</div>
+								</div>
+							<?php endif; ?>
+							<?php if($target->getType()!="waypoint"): ?>
+								<div class="route__step-label route__step-row route__step-row--target">
+									<?php echo '<strong>Até</strong>: '. $target->getNames()[0]; ?>
+								</div>
+							<?php endif; ?>
 						</div>
-					</div>
-				</div>				
-			</div>
+					</div>				
+				</div>
+			<?php endif; ?>
 		<?php endforeach; ?>
 	</div>
 </div>		
