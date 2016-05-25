@@ -75,6 +75,12 @@ class Main
 		}
 	}
 
+	public static function jsonAlphabet()
+	{
+		global $alphabet;
+		echo 'var _alphabet = '.json_encode($alphabet).';';
+	}
+
 	/* Page related */
 
 	public static function getAppName($echo = false)

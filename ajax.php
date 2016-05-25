@@ -78,13 +78,15 @@ class AjaxCall
 				$path = $g->getPathBetween($n1, $n2, $params);
 				elapsetime("GRAPH_pathFinding");
 				elapsetime("GRAPH_TOTAL");
-				$g->printPath($path);
 
-				printElapsedTimes(["SUBGRAPH_ALLPATHS","SUBGRAPH_QUERY_GENERIC","SUBGRAPH_QUERY_LOCATIONS"]);
 				printElapsedTimes(["SUBGRAPH_pathFinding","GRAPH_pathFinding"]);
+				echo '<br><br>';
 				printElapsedTimes(["SUBGRAPH_generation","GRAPH_generation"]);
+				echo '<br><br>';
 				printElapsedTimes(["SUBGRAPH_QUERY_LOCATIONS","GRAPH_QUERY"]);
+				echo '<br><br>';
 				printElapsedTimes(["SUBGRAPH_TOTAL","GRAPH_TOTAL"]);
+				echo '<br><br>';
 				printElapsedTimes();
 			}
 		}

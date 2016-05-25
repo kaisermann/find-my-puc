@@ -79,6 +79,7 @@ class Graph
 		$ignorableAttributes = [];
 		$distances = [];
 		$previous = [];
+		$previousEdge = NULL;
 
 		$distances[$startID] = 0;
 		$queue->insert($startID, 0);
@@ -190,7 +191,11 @@ class Graph
 				// o algoritmo faz com que só atravessemos uma ligação do tipo se for
 				// extremamente necessário.
 				if($edgeType == "PARENT_OF" || $edgeType == "CONNECTED_TO")
-					$edgeWeight = 9999;
+					$edgeWeight = 9999;	
+
+				// Adiciona um peso extra à troca de direções.
+				if($previousEdge != NULL && $previousEdge->getAttr('dir') != $edge->getAttr('dir'))
+					$edgeWeight *= 3;
 
 				$alt = $distances[ $curNode ] + $edgeWeight;
 				if ( $alt < $distances[$nodeB_ID] )
@@ -198,6 +203,7 @@ class Graph
 					$distances[ $nodeB_ID ] = $alt;
 					$previous[ $nodeB_ID ] = ["node" => $curNode, "edge" => $edge];
 					$queue->insert( $nodeB_ID, $alt );
+					$previousEdge = $edge;
 				}
 			}
 			$queue->next();

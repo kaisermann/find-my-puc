@@ -34,13 +34,12 @@ class Neo
 
 	public static function getSubgraph($nodeA, $nodeB)
 	{
-		$q = 'match (n)-[e]->(m) RETURN n, m, e';
+		$q = QUERY_EVERYTHING;
 
 		$parentA = explode("n", $nodeA);
 		$parentB = explode("n", $nodeB);
 		
-		$q = '
-		MATCH (src{id:"'.$nodeA.'"}),(tgt{id:"'.$nodeB.'"})
+		$q = 'MATCH (src{id:"'.$nodeA.'"}),(tgt{id:"'.$nodeB.'"})
 		WITH 
 		(CASE WHEN src:Location THEN src.parent ELSE src.id END) AS genericSrc
 		,(CASE WHEN tgt:Location THEN tgt.parent ELSE tgt.id END) AS genericTgt
@@ -71,7 +70,7 @@ class Neo
 	public static function populateGraph($graph)
 	{
 		elapsetime("GRAPH_QUERY");
-		$q = 'match (n)-[e]->(m) RETURN n, m, e';
+		$q = QUERY_EVERYTHING;
 
 		$limit = 400;
 		$counter = 0;

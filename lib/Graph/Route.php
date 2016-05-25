@@ -42,24 +42,26 @@ class Route
 
 	}
 
-	public static function translateDirection($dir)
+	public static function translateDirection($dir, $tolower = false)
 	{
 		switch($dir)
 		{
-			case 1: return 'Em frente';
+			case 1: $str = 'Em frente'; break;
 
-			case 2: return 'Em frente à direita';
-			case 3: return 'À direita';
+			case 2: $str = 'Em frente à direita'; break;
+			case 3: $str = 'À direita'; break;
 
-			case 4: return 'Para à direita';
-			case 5: return 'Para trás';
-			case 6: return 'Para trás à esquerda';
+			case 4: $str = 'Para trás à direita'; break;
+			case 5: $str = 'Para trás'; break;
+			case 6: $str = 'Para trás à esquerda'; break;
 
-			case 7: return 'À esquerda';
-			case 8: return 'Em frente à esquerda';
+			case 7: $str = 'À esquerda'; break;
+			case 8: $str = 'Em frente à esquerda'; break;
 			default:
-				return NULL;
+				$str = NULL;
+				break;
 		}
+		return $tolower ? @mb_strtolower($str) : $str;
 
 	}
 }

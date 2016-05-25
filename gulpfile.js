@@ -68,7 +68,7 @@ var cssTasks = function(filename)
 	})
 	.pipe(_.concat, filename)
 	.pipe(_.autoprefixer, { browsers: config.prefixes })
-	.pipe(_.cmq, {beautify:true})	
+	//.pipe(_.cmq, {beautify:CLIOpts.assetdebug})	
 	.pipe(function()
 	{
 		return _.gulpif(!CLIOpts.assetdebug, _.cssnano());

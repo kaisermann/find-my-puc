@@ -51,6 +51,7 @@
 			"find" => [	  '[áã]', '[éê]', '[íî]', '[óô]', '[úüû]', 'ç', ' - ', '\\.', 'professora?'],
 			"replace" => ['a',    'e',    'i',    'o',    'u',     'c', ' ',   '',    'prof']
 			];
+			global $alphabet;
 
 			foreach ($result->records() as $record)
 			{
@@ -58,17 +59,18 @@
 				$id = $record->value('id');
 
 				$n_names = count($names);
-				$n_alphabet = count($alphabet["find"]);
 				$finalNames = $names;
 
 				for($i = 0; $i < $n_names; $i++)
 				{
-					for($j = 0 ; $j < $n_alphabet; $j++)
+					foreach ($alphabet as $find => $replace) 
 					{
-						$names[$i] = preg_replace('/'.$alphabet["find"][$j].'/imu',$alphabet["replace"][$j],$names[$i]);
+						$names[$i] = preg_replace('/'.$find.'/imu',$replace,$names[$i]);
+
 					}
 					$names[$i] = strtolower($names[$i]);
 				}
+
 				echo '<li class="search-viewer__item" data-slug="'.slugify($finalNames[0]).'" data-id="'.$id.'" data-names="'.implode('|', $names).'"><span class="search-viewer__item__content">';
 				echo '<span class="search-viewer__item__name">'.$finalNames[0].'</span>';
 				if($n_names>1)

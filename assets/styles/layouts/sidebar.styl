@@ -1,0 +1,236 @@
+#header
+	left 0
+	top 0
+	background: colors.gray
+	color: colors.white
+	z-index 2
+	
+.header__logo
+	font-size 1.8rem
+	padding 1rem 1.5rem
+	line-height 1.4
+	background: colors.darken-blue[2]
+	color: colors.white
+	
+.header__search
+	margin-top 6rem
+				
+.search
+	&__label
+		display block
+		font-size 1.6rem
+		
+	&__place
+		color: colors.black
+		background: colors.yellow
+		cursor pointer
+		border-right: .6rem solid colors.blue
+		cursor pointer
+		transition background .3s ease
+		
+		&--active
+		&:hover
+			background: colors.darken-blue[3]
+			color: colors.white
+			
+		&:active
+			span
+				transform scale(1.04)
+			
+		span
+			display block
+			transition .3s ease
+	
+		&--done
+			.search__label
+				font-size 1.2rem
+				
+			.search__value
+				animation fadeIn .3s ease
+				margin-top .5rem
+		
+	&__value
+		display block
+		font-size 1.5rem
+	
+.search-viewer	
+	&__bg
+		position fixed
+		z-index 1
+		top 0
+		left 0
+		size(100%)
+		background-color: rgba(colors.black,.6)
+		transition opacity .3s ease, visibility .3s ease
+		opacity 0
+		visibility hidden
+			
+	&__content
+		position fixed
+		left: (sizes.aside - sizes.search-viewer)
+		top 0
+		size(sizes.search-viewer, 100vh)
+		max-width 100%
+		background: colors.lighten-gray[8]
+		transition left .3s ease, top .3s ease
+		z-index 1
+		border-right: .3rem solid colors.darken-blue[3]
+		
+	&__input
+		width 100%
+		border none
+	
+	&__list
+		position relative
+		width 100%
+		overflow-y scroll
+		max-height calc(100% - 4.1rem)
+		line-height 1.2
+		z-index 2
+		
+	&__item
+		overflow hidden
+		cursor pointer
+		transition background .2s ease
+		max-height 12rem
+		opacity 1
+		border-bottom: 1px solid colors.lighten-gray[5]
+		
+		&__content 
+			display inline-block
+			padding .8rem 2rem
+			transition transform .4s ease
+			
+		small
+			display block
+			font-size 1.2rem
+			font-style italic
+		
+		&:nth-child(odd)
+			background: colors.darken-white[0]
+			
+		&:nth-child(even)
+			background: colors.darken-white[1]
+			
+		&:active:not(&--disabled)
+			background: colors.darken-blue[4]
+			color: colors.white
+			span
+				transform scale(1.04)
+		
+		&&--current
+		&:not(&--disabled):not(:active):hover
+			background: colors.darken-blue[3]
+			color: colors.white
+			
+		&&--current
+			font-weight bold
+			
+		&--inactive
+			border 0
+			max-height 0 
+			opacity 0
+			
+		&--disabled
+			color: colors.lighten-gray[3]
+			
+			&:hover
+				color: colors.lighten-gray[3]
+				
+	&__no-results
+		display block
+		width 100%
+		top 4rem
+		position absolute
+		font-weight bold
+		padding .5rem
+		color: colors.lighten-gray[3]
+		z-index 1
+		transition opacity .3s ease
+		opacity 0
+
+		&--visible
+			opacity 1
+			
+	&__close-btn
+		display none
+		
+	&--active
+		.search-viewer__bg
+			opacity 1
+			visibility visible
+		
+		.search-viewer__content
+			left: sizes.aside
+			
+.filters
+	padding 1.5rem 0
+	background-color: colors.darken-gray[1]
+	
+	&__title
+		margin 0 1.5rem
+		font-size 1.6rem
+		
+	&__section
+		margin-top 1.5rem
+		padding 1.5rem
+		font-size 1.4rem
+		background-color: colors.darken-gray[3]
+		
+	&__item
+		margin-top 1rem
+
++above(md)
+	#header
+		position fixed
+		size(sizes.aside, 100vh)
+			
+	.filters			
+		&__section			
+			.form-control--radio
+				font-size 1.4rem
+				
+				label::before
+					size(1.6rem)
+		
+	.search-viewer__item
+		transition max-height .35s ease, opacity .2s ease, background .2s ease
+		
++below(sm)
+	#header
+		position static
+		width 100%
+		padding 1.5rem
+	
+	.search-viewer
+		&__content
+			max-height 40rem
+			transform translateY(-50%)
+			width auto
+			top -100%
+			left 1.5rem
+			right 1.5rem
+			border-right 0
+			
+		&__no-results
+			top 9rem
+			
+		&__list
+			max-height calc(100% - 4.1rem - 4.6rem)
+			
+		&__close-btn
+			display block
+
+		&--active
+			.search-viewer__content
+				left 1.5rem
+				top 50%
+				
+	.filters__section
+		margin 1.5rem 1.0rem
+		
++below(sm, orientation: landscape)
+	.search-viewer
+		&__content
+			max-height 25rem
+			

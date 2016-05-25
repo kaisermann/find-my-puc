@@ -1,4 +1,5 @@
 /* global Visc */
+/* global _alphabet */
 /* global ajax_url */
 /* global base_url */
 /* global Tiq */
@@ -15,19 +16,6 @@
 	, Reusable
 	, Url
 	, Attributes;
-
-	var sanitizeAlphabet = 
-	{
-		'[áãà]': 'a'
-		, '[éê]': 'e'
-		, '[íî]': 'i'
-		, '[óô]': 'o'
-		, '[úüû]': 'u'
-		, 'ç': 'c'
-		, ' - ': ' '
-		, '\\.': ''
-		, 'professora?': 'prof'
-	};
 
 	Url =
 	{
@@ -64,6 +52,8 @@
 
 				Util.genericHandlers();
 				Util.searchHandler();
+
+				Util.routeHandlers();
 			},
 			end: function()
 			{
@@ -84,8 +74,8 @@
 	{
 		'sanitize': function(str)
 		{
-			for (var val in sanitizeAlphabet)
-				str = str.replace(new RegExp(val, 'g'), sanitizeAlphabet[val]);
+			for (var val in _alphabet)
+				str = str.replace(new RegExp(val, 'g'), _alphabet[val]);
 
 			return str;
 		},
@@ -124,6 +114,14 @@
 
 	Util = 
 	{
+		routeHandlers: function()
+		{
+			$('body').on('click', '.route__step-between__list-wrapper', function()
+			{
+				var $_ = $(this);
+				$_.toggleClass('route__step-between__list-wrapper--active');
+			});
+		},
 		genericHandlers: function()
 		{
 			$(window).on('keyup', function(e)
@@ -155,11 +153,15 @@
 
 			$searchInput.on('keyup', function(e)
 			{
-				if(e.keyCode!==8 && e.keyCode<33)
+				console.log(e.keyCode);
+				if(e.keyCode < 33 && e.keyCode !== 8)
 					return;
 
 				var $_= $(this);
+				console.log($_.prop('value').toLowerCase());
 				var _searchParam = Tools.sanitize($_.prop('value').toLowerCase());
+				console.log(_searchParam);
+				console.log();
 
 				if(_lastVal === _searchParam)
 					return;
@@ -181,9 +183,9 @@
 						e.classList.remove('search-viewer__item--inactive');
 						_nResults++;
 					}
-					console.log("search: " + _searchParam);
-					console.log("_curName: " + _names);
+					//console.log("_curName: " + _names);
 				});
+				console.log("search: " + _searchParam);
 
 				if(_nResults === 0)
 					Reusable.search_viewer_content.children('.search-viewer__no-results').addClass('search-viewer__no-results--visible');

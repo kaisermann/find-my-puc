@@ -2,6 +2,7 @@
 $dir = dirname(__FILE__);
 $files = [
 	'../vendor/autoload',
+	'define',
 	'Graph/Graph',
 	'Graph/Route',
 	'Helpers/Assets',
