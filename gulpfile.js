@@ -198,7 +198,7 @@ gulp.task('watch', function()
 	{
 		_.browserSync.init(
 		{
-			files: ['{lib,templates}/**/*.{php,html}', '*.{php,html}'],
+			files: ['{lib,templates,layout}/**/*.{php,html}', '*.{php,html}'],
 			proxy: config.devUrl,
 			snippetOptions: 
 			{

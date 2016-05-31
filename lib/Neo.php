@@ -1,9 +1,10 @@
 <?php
 
 use GraphAware\Neo4j\Client\ClientBuilder;
+use GraphAware\Neo4j\Client\Neo4jClientEvents;
 
 class Neo
-{
+{	
 
 	public static $client = NULL;
 
@@ -13,6 +14,8 @@ class Neo
 	{
 		if(self::$client!=NULL)
 			return self::$client;
+
+		$GLOBALS['neo4jOn'] = true;
 
 		self::$client = ClientBuilder::create()
 		->addConnection('default', 'http://neo4j:hunter155@localhost:7474')
@@ -24,7 +27,14 @@ class Neo
 	public static function executeQuery($query, $limit = 400, $skip = 0)
 	{
 		$query = $query.' SKIP '.$skip.' '.'LIMIT '.$limit;
-		$result = self::$client->run($query);
+		try
+		{
+			$result = @self::$client->run($query);
+		}
+		catch(Exception $e)
+		{
+			$GLOBALS['neo4jOn'] = false;
+		}
 
 		if(DEBUG)
 			p_dump($query);

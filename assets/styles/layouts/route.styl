@@ -1,0 +1,227 @@
+.route	
+	max-width 54rem
+	margin 0 auto
+		
+	&__step
+		display flex
+		align-items center
+		width 100%
+			
+		& + &
+			margin-top 6rem
+				
+		&[dir-type='hard']
+			.route__step-direction
+				border-color: colors.darken-red[2]
+				&::before
+					border-color: transparent transparent colors.darken-red[2] transparent
+				
+				&::after
+					background: colors.darken-red[2]
+					
+			.route__step-verbose-direction
+				background-color: colors.darken-red[2]
+			
+
+		for i in (2..8)
+			&[dir=\'{i}\']
+				.route__step-direction
+					transform rotateZ(((i - 1) * 45)deg)
+		&-left
+			width 4.2rem
+			min-height 4.2rem
+			text-align center
+			transition all .3s ease
+			
+		&-direction
+			display block
+			size(4.2rem)
+			position relative
+			background-color: colors.white
+			border-radius 50%
+			border: 2px solid colors.darken-blue[2]
+			
+			&--hidden
+				visibility hidden
+				max-height 0
+				overflow hidden
+			
+			&::before
+				content ''
+				display block
+				position absolute
+				size(0)
+				bottom 1.6rem
+				left 50%
+				transform translateX(-50%)
+				border-style solid
+				border-width 0 1rem 1.5rem 1rem
+				border-color: transparent transparent colors.darken-blue[2] transparent
+				
+			&::after
+				content ''
+				display block
+				position absolute
+				size(.6rem,2rem)
+				background: colors.darken-blue[2]
+				bottom .7rem
+				left 50%
+				transform translateX(-50%)
+			
+		&-label
+			display block
+			padding 1rem 1.5rem
+			
+			&--big
+				padding 1.5rem 2.5rem
+				width 100%
+				text-align center
+
+				
+		&-steps
+			display inline-block
+			font-weight bold
+			margin-top .8rem
+			background-image url(../images/footsteps.png)	
+			background-size 1.6rem
+			background-repeat no-repeat
+			background-position 100% 0		
+			padding-right 2rem
+			
+		&-meters
+			display inline-block
+			font-size 1rem
+			margin-top .4rem
+	
+		&-right
+			margin-left 2.5rem
+			width 100%
+						
+		&-verbose-direction
+			font-weight bold
+			background-color: colors.darken-blue[2]
+			color: colors.white
+
+		&-row
+			&:not(:last-child)
+				border-bottom: 1px solid colors.darken-yellow[0]
+			&--origin
+			&--target
+				background-color: colors.yellow
+
+			&--between
+				background-color: colors.lighten-gray[7]
+				
+				.route__step-label
+					background-color: colors.darken-yellow[2]
+				
+		&-between
+			&__list
+				transition opacity .3s ease
+				&-wrapper
+					background-color: colors.lighten-gray[8]
+					position relative
+					min-height 3rem
+					cursor pointer
+					transition background-color .3s ease
+					
+					&:hover
+						background-color: colors.lighten-gray[6]
+					&::before
+						content '…'
+						display inline-block
+						transform rotateZ(90deg)
+						position absolute
+						top .8rem
+						left 1.8rem
+						transition opacity .3s .2s ease
+						
+					.route__step-between__list
+						max-height 0
+						opacity 0
+						overflow hidden
+					
+					&&--active
+						&::before
+							transition opacity .3s ease
+							opacity 0
+						.route__step-between__list
+							transition opacity .3s .1s ease
+							opacity 1
+							max-height 1000px
+				
+			&__nodes
+				font-size 1.4rem
+				border-left: 1px solid colors.lighten-gray[5]
+				border-right: 1px solid colors.lighten-gray[5]
+			&__node
+				padding .6rem 2rem 
+				
+		&-instruction
+			display flex
+			background-color: colors.brown
+			padding 1rem 1.5rem
+			color: colors.white
+			align-items center
+			min-width 7rem
+			font-weight bold
+			
+			&--big
+				min-width 13rem
+
+	&__node
+		&-name
+			display flex
+			position relative
+			
+		&-info
+			align-self center
+			width 100%
+			
+		&-img-wrapper
+			background-size cover
+			background-position center
+			margin 0
+			min-height 10rem
+			width 14rem
+						
+		
+		&-names
+			padding 1rem 1.5rem
+			&__item
+				margin-top .3rem
+				display block
+				font-style italic
+
+
++below(ty)
+	.route
+		&__node
+			&-name
+				flex-wrap wrap
+			&-img-wrapper
+				width 100%
+				min-height 20rem
+			
+		&__step
+			background-color: rgba(lighten(colors.lighten-gray[7],30%),.6)
+			padding 3rem 1rem
+			
+			& + &
+				margin-top 3rem
+				
+			&-row
+				margin-top 1rem
+				border-bottom none
+					
+			&-instruction
+				width 100%
+			
+			&-between
+				&__nodes
+					border-bottom: 1px solid colors.lighten-gray[5]
+				
++above(xs)
+	.route
+		background-color: rgba(colors.white,.8)
+		padding 2rem

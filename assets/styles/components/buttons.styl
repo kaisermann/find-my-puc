@@ -5,6 +5,9 @@
 	color: colors.black
 	display block
 	font-weight bold
+	border none
+	cursor pointer
+	transition .3s ease
 		
 	&:hover
 		background: colors.darken-blue[3]
@@ -22,3 +25,31 @@
 	&:active
 		span
 			transform scale(1.04)
+			
+.burguer
+	visibility hidden
+	opacity 0
+	size(3.5rem)
+	min-height 3.5rem
+	background: colors.yellow
+	position absolute
+	top 2rem
+	right 2rem
+	padding .5rem
+	
+	&__stripe
+		display block
+		size(100%, .4rem)
+		background: colors.black
+		transition .3s ease
+		
+		& + &
+			margin-top .5rem
+		
+	&--active
+		background: colors.gray
+		
+		.burguer__stripe
+			background: colors.yellow
+		
+			

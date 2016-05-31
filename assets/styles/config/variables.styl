@@ -3,17 +3,38 @@ _base-font-size 					= 10px
 _site-width 						= 1140px
 
 /* Bower overrides */
-rolleiflex.baseFontSize 			= _base-font-size
-rolleiflex.use.rem 					= true
+rolleiflex.baseFontSize 			= 16px
+rolleiflex.use.em 					= true
 rolleiflex.build.declarative 		= true
-rolleiflex.breakpoints.lg.container = _site-width
+
+rolleiflex.breakpoints = {
+	"ty": {
+		"breakpoint": 0,		
+	},
+	"xs": {
+		"breakpoint": 481px,
+		"container": 460px	
+	},
+	"sm": {
+		"breakpoint": 767px,
+		"container": 740px
+	},
+	"md": {
+		"breakpoint": 991px,
+		"container": 960px
+	},
+	"lg": {
+		"breakpoint": 1200px,
+		"container": _site-width
+	}
+}
 
 bp = rolleiflex.breakpoints
-rupture.base-font-size 				= _base-font-size
-rupture.scale 						= 0 (bp.sm.breakpoint) (bp.md.breakpoint) (bp.lg.breakpoint)
+rupture.base-font-size 				= 16px
+rupture.scale 						= 0 (bp.xs.breakpoint) (bp.sm.breakpoint) (bp.md.breakpoint) (bp.lg.breakpoint)
 rupture.scale-names 				= keys(rolleiflex.breakpoints)
 rupture.anti-overlap 				= true
-rupture.enable-em-breakpoints 		= false
+rupture.enable-em-breakpoints 		= true
 rupture.mobile-cutoff 				= bp.sm.breakpoint
 rupture.tablet-cutoff 				= bp.md.breakpoint
 rupture.desktop-cutoff 				= bp.md.breakpoint
@@ -46,11 +67,6 @@ for colorName, hex in colors
 		push(colors['desaturate-'+colorName], desaturate(hex, unit(i * 10, '%')))
 		push(colors['saturate-'+colorName], saturate(hex, unit(i * 10, '%')))
 	
-	{'darken-'+colorName}
-		foo: colors['lighten-'+colorName]
-		foo: colors['darken-'+colorName]
-		foo: colors['desaturate-'+colorName]
-		foo: colors['saturate-'+colorName]
 
 /* Fonts */
 

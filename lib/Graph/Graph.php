@@ -43,6 +43,21 @@ class Graph
 		$this->edgeCount += 2;
 	}
 
+	public function checkNodeParent($node, $parentID)
+	{
+		$tmpNode = $node;
+		do
+		{
+			$pid = $tmpNode->getAttr('parent');
+			if($pid == $parentID)
+				return true;
+
+			$tmpNode = $this->getNode($pid);
+		} while($tmpNode);
+
+		return false;
+	}
+
 	public function getPathBetween($start, $finish, $params = [])
 	{
 		$queue = new GraphQueue();
@@ -144,6 +159,7 @@ class Graph
 				$jump = false;
 
 				$nodeA = $edge->getNodeA();
+				$nodeA_ID = $nodeA->id();
 				foreach($ignorableEntities as $ignorableEntity => $ignorableAttrs)
 				{
 					$entity = $ignorableEntity === "edge" ? $edge : $nodeA;
@@ -194,7 +210,8 @@ class Graph
 					$edgeWeight = 9999;	
 
 				// Adiciona um peso extra à troca de direções.
-				if($previousEdge != NULL && $previousEdge->getAttr('dir') != $edge->getAttr('dir'))
+				
+				if($previous[$nodeA_ID] != NULL && $previous[$nodeA_ID]['edge']->getAttr('dir') != $edge->getAttr('dir'))
 					$edgeWeight *= 3;
 
 				$alt = $distances[ $curNode ] + $edgeWeight;

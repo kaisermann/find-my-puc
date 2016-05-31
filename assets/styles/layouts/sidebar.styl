@@ -1,16 +1,23 @@
-#header
+.header
 	left 0
 	top 0
 	background: colors.gray
 	color: colors.white
 	z-index 2
+	display flex
+	flex-direction column
+	justify-content space-between
+	
 	
 .header__logo
 	font-size 1.8rem
-	padding 1rem 1.5rem
 	line-height 1.4
 	background: colors.darken-blue[2]
-	color: colors.white
+	
+	a
+		color: colors.white
+		padding 1rem 1.5rem
+		display: block
 	
 .header__search
 	margin-top 6rem
@@ -35,7 +42,7 @@
 			
 		&:active
 			span
-				transform scale(1.04)
+				transform scale(1.025)
 			
 		span
 			display block
@@ -180,14 +187,27 @@
 	&__item
 		margin-top 1rem
 
+.header__menu	
+	padding 2rem
+	font-weight bold
+	
+	li
+		margin-top 1rem
+		border-left: .2rem solid colors.white
+		padding-left .5rem
+	a
+		color: colors.white
+		&:hover
+			color: colors.yellow
+
 +above(md)
-	#header
+	.header
 		position fixed
 		size(sizes.aside, 100vh)
 			
 	.filters			
 		&__section			
-			.form-control--radio
+			.form__control--radio
 				font-size 1.4rem
 				
 				label::before
@@ -197,20 +217,50 @@
 		transition max-height .35s ease, opacity .2s ease, background .2s ease
 		
 +below(sm)
-	#header
+	.burguer
+		visibility visible
+		opacity 1
+		min-height 0
+		 
+	.header
 		position static
 		width 100%
 		padding 1.5rem
+		
+		&__search
+		&__menu
+			margin-top 0
+			max-height 0
+			overflow hidden
+			transition all .3s ease
+			padding 0
+			opacity 0
+			
+		&--active
+			min-height 100vh
+			.header__search
+			.header__menu
+				max-height 1000px
+				opacity 1
+				
+			.header__menu
+				&--active
+					margin-top 3rem
+					padding 2rem .9rem
+				
+			.header__search
+				margin-top 6rem
 	
 	.search-viewer
 		&__content
-			max-height 40rem
 			transform translateY(-50%)
 			width auto
 			top -100%
 			left 1.5rem
 			right 1.5rem
 			border-right 0
+			min-height 25rem
+			max-height 80%
 			
 		&__no-results
 			top 9rem
@@ -228,9 +278,4 @@
 				
 	.filters__section
 		margin 1.5rem 1.0rem
-		
-+below(sm, orientation: landscape)
-	.search-viewer
-		&__content
-			max-height 25rem
 			

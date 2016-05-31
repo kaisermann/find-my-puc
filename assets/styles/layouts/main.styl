@@ -1,20 +1,39 @@
-#main
-	padding 0 4.0rem
+.main
 	overflow hidden
-	min-height 100vh
 	position relative
+	background-image: url(../images/bg-puc-3.jpg)
+	background-position center
+	background-size cover
+	background-attachment fixed
+	
+	&[data-page='route']
+		.main__content
+			padding 0
+			background-color: transparent
 	
 .main
 	&__content
 		transition opacity .3s ease
 		opacity 1
-		padding 2rem
-		background-color: darken(colors.white,5%)
+		padding 2rem 1rem
+		background-color: rgba(colors.white,.8)
 		min-height 100vh
 		&--hidden
 			opacity 0
 	
 	
 +above(md)
-	#main
+	.main
 		margin-left: sizes.aside
+		padding 0 4.0rem
+		
+		&__content
+			padding 2rem
+		
+		&--full
+			margin-left 0
+			width 100%
+			padding 0
+			
+			.main__content
+				padding 0

@@ -48,6 +48,8 @@ textarea,
 button
 {
     margin: 0;
+    border-radius: 0;
+    -webkit-appearance: none;
 }
 
 button {
@@ -55,6 +57,7 @@ button {
     border: 0;
     font: inherit;
     -webkit-font-smoothing: inherit;
+    -webkit-appearance: none;
     letter-spacing: inherit;
     background: none;
     cursor: pointer;

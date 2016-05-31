@@ -4,6 +4,7 @@
       "files": [
         "scripts/main.js"
       ],
+      "bower": ["swipebox","tiq","ViSC"],
       "vendor": ["assets/scripts/vendor/*.js"],
       "main": true
     },
@@ -12,7 +13,7 @@
         "styles/wrapper.styl"
       ],
       "vendor": ["assets/styles/vendor/reset.css","assets/styles/vendor/*.css"],
-      "bower": [],
+      "bower": ["swipebox"],
       "main": true
     }
   },

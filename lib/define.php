@@ -5,7 +5,7 @@ define('APP_NAME', 'Perdido No Campus');
 
 define('QUERY_SEARCH_LIST', 'MATCH (n)
 	WHERE NOT (n:Ignorable OR (exists(n.subtype) AND n.subtype STARTS WITH "banheiro"))
-	RETURN n.id as id, n.names as names ORDER BY LOWER(n.names[0]) ASC');
+	RETURN n.id as id, n.names as names, labels(n) as labels ORDER BY LOWER(n.names[0]) ASC');
 
 define('QUERY_EVERYTHING', 'match (n)-[e]->(m) RETURN n, m, e');
 
@@ -24,17 +24,20 @@ define('DIR_LEFT', 7);
 define('PAGE_ID', 'id');
 
 define('PROTOCOL', 'http://');
-define('DIST_DIR', '/dist/');
+define('DIST_DIR', 'dist/');
 
 define('PUBLIC_DEV', false);
 if(PUBLIC_DEV)
 {
-	define('ROOT_DIR', PROTOCOL.'189.122.14.86:8080/findmypuc');
+	define('ROOT_DIR', PROTOCOL.'179.218.92.42:8080/findmypuc/');
 }
 else
 {
-	define('ROOT_DIR', PROTOCOL.'10.0.0.10/findmypuc');
+	define('ROOT_DIR', PROTOCOL.'localhost/findmypuc/');
 }
+
+define('IMG_DIR', ABSPATH.DIST_DIR.'images/nodes/');
+define('IMG_URL', ROOT_DIR.DIST_DIR.'images/nodes/');
 
 define('DEBUG', false);
 define('MINIFY_HTML', false);

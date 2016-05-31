@@ -50,7 +50,9 @@ class AjaxCall
 
 			$n1 = $g->getNode($originNode);
 			$n2 = $g->getNode($targetNode);
-			$GLOBALS['route'] = $g->getPathBetween($n1, $n2, $params);
+			
+			$GLOBALS['graph'] = $g;
+			$GLOBALS['route'] = Route::parseRoute($g->getPathBetween($n1, $n2, $params));
 
 			if(DEBUG)
 			{
@@ -110,6 +112,7 @@ class AjaxCall
 			$places[] = [
 			"names" => $record->value("names")
 			, "id" => $record->value("id")
+			, "labels" => $record->value("labels")
 			];
 		}
 		$places = json_encode($places);

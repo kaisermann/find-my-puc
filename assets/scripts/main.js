@@ -35,7 +35,8 @@
 	{
 		search_form: $('#search-form'),
 		search_viewer: $('.search-viewer'),
-		main: $('#main')
+		main: $('.main'),
+		btnMobile: $('.js-mobile-btn')
 	};
 
 	Reusable.search_viewer_content = Reusable.search_viewer.children('.search-viewer__content');
@@ -50,6 +51,19 @@
 				Url.Query = Tools.parseQueryString(window.location.search, true);
 				Url.Parameters = Tools.parseUrlParams(window.location.pathname);
 
+				Reusable.btnMobile.on('click', (function()
+				{
+					var _headerActive = false;
+					var $search = $('.header__search');
+					var $menu = $('.header__menu');
+					var $header = $('.header');
+					return function()
+					{
+						_headerActive = !_headerActive;
+						$header.toggleClass('header--active');
+					};
+				})());
+
 				Util.genericHandlers();
 				Util.searchHandler();
 
@@ -58,10 +72,9 @@
 			end: function()
 			{
 				new Tiq()
-				.add(300, function() 
+				.add(150, function() 
 				{
-					console.log('remove');
-					Util.setLoading(false, $(d.body), 'body'); 
+					Util.setLoading(false, 'body', $(d.body)); 
 					if(Attributes.shouldSearch)
 						Reusable.search_form.trigger('submit');
 				})
@@ -116,10 +129,19 @@
 	{
 		routeHandlers: function()
 		{
-			$('body').on('click', '.route__step-between__list-wrapper', function()
+			$('body')
+			.on('click', '.route__step-between__list-wrapper', function()
 			{
 				var $_ = $(this);
 				$_.toggleClass('route__step-between__list-wrapper--active');
+			})
+			.on('click', '.js-route__node-img', function(e)
+			{
+				e.preventDefault();
+				$.swipebox( [
+					{ href:$(this).attr('href'), title:$(this).attr('data-title') }
+					] );
+
 			});
 		},
 		genericHandlers: function()
@@ -255,6 +277,8 @@
 				if(_readyToSubmit && !Attributes.isLoading.main)
 				{
 					Util.closeSearchViewer();
+					if($(w).outerWidth()<=767)
+						Reusable.btnMobile.trigger('click');
 
 					var _itemSlug = {};
 
@@ -282,7 +306,8 @@
 
 					Util.loadPage(ajax_url
 						,'action=findRoute&'+_serialized
-						, slug);
+						, slug
+						, 'route');
 				}
 			});
 
@@ -396,7 +421,7 @@
 				.removeClass('search-viewer__item--disabled');
 
 				Reusable.search_viewer_content
-				.find('.search-viewer__item[data-id="'+_oppositeID+'"]')
+				.find('.search-viewer__item[data-id="'+_oppositeID+'"],.search-viewer__item[data-only-for="'+_oppositeRole+'"]')
 				.addClass('search-viewer__item--disabled');
 				
 				setTimeout(function()
@@ -418,9 +443,9 @@
 
 			Reusable.search_viewer.removeClass('search-viewer--active');
 		},
-		loadPage: function(url, data, slug, callback, errorCallback)
+		loadPage: function(url, data, slug, mainName, callback, errorCallback)
 		{
-			Util.setLoading(true);
+			Util.setLoading(true, 'main');
 
 			if(slug)
 				history.replaceState(null, null, base_url + slug);
@@ -438,8 +463,9 @@
 				success: function(response)
 				{
 					var $mainContent = Reusable.main.children('.main__content');
+					Reusable.main.attr('data-page', mainName);
 
-					Util.setLoading(false);
+					Util.setLoading(false,'main');
 					$mainContent.addClass('main__content--hidden');
 					setTimeout(function()
 					{
@@ -451,7 +477,7 @@
 				}
 			});
 		},
-		setLoading: function(shouldLoad, wrapper, loadingClass)
+		setLoading: function(shouldLoad, loadingClass, wrapper)
 		{
 			var $wrapper = wrapper || Reusable.main;
 

@@ -30,21 +30,25 @@ class Main
 		global $Request;
 		$url = $_SERVER['REQUEST_URI'];
 		$urlParams = explode('/', $url);
+		$urlParams = array_slice($urlParams, 2);
 		$n_params = count($urlParams);
 		for($i = 0; $i < $n_params; $i++)
 		{
+			$urlParams[$i] = preg_split('/(\#|\?)/', $urlParams[$i])[0];
 			switch($urlParams[$i])
 			{
 				case 'origem':
 				case 'destino':
-					$Request[$urlParams[$i]] = $urlParams[$i+1];
-					$i++;
+				$Request[$urlParams[$i]] = $urlParams[$i+1];
+				$i++;
+				break;
+
+				default:
+				$Request['id'] = $urlParams[$i];
 				break;
 			}
 		}
 	}
-
-		// 
 
 	public static function loadIs()
 	{
@@ -98,6 +102,23 @@ class Main
 			echo $name;
 		return $name;
 	}
+
+	/* Graph Related */
+
+	public static function getNodeImage($node)
+	{
+		$url = '';
+		$imgSlug = $node->getAttr('img');
+
+		if(!$imgSlug)
+			$imgSlug = slugify($node->getNames()[0]);
+
+		$url = $imgSlug.'.jpg';
+		if(file_exists(IMG_DIR.$url))
+			return IMG_URL.$url;
+		return NULL;
+	}
+
 }
 Main::load();
 ?>

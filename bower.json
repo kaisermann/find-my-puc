@@ -9,9 +9,10 @@
   "private": true,
   "dependencies": {
     "rupture-by-jenius": "^0.6.1",
-    "rolleiflex": "^1.1.0",
     "ViSC": "visc#^1.3.1",
-    "tiq": "^1.1.2"
+    "tiq": "^1.1.2",
+    "rolleiflex": "^0.2.0",
+    "swipebox": "^1.4.4"
   },
   "overrides": {
     "rupture-by-jenius": {
@@ -20,9 +21,8 @@
     "rolleiflex": {
       "main": "src/wrapper.styl"
     },
-    "": {
-      "dependencies": {},
-      "main": ""
+    "swipebox": {
+      "main": ["src/css/swipebox.css", "src/js/jquery.swipebox.js"]
     }
   },
   "devDependencies": {}

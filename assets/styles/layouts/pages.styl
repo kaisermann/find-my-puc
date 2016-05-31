@@ -1,158 +1,21 @@
-.route	
-	&__step
-		display flex
-		align-items center
-		width 100%
-			
-		& + &
-			margin-top 3rem
-				
-		&[dir-type='hard']
-			.route__step-direction
-				border-color: colors.darken-red[2]
-				&::before
-					border-color: transparent transparent colors.darken-red[2] transparent
-				
-				&::after
-					background: colors.darken-red[2]
-					
-			.route__step-verbose-direction
-				background-color: colors.darken-red[2]
-			
-
-		for i in (2..8)
-			&[dir=\'{i}\']
-				.route__step-direction
-					transform rotateZ(((i - 1) * 45)deg)
-		&-left
-			width 4.2rem
-			min-height 4.2rem
-			text-align center
-			
-		&-direction
-			display block
-			size(4.2rem)
-			position relative
-			background-color: colors.white
-			border-radius 50%
-			border: 2px solid colors.darken-blue[2]
-			
-			&::before
-				content ''
-				display block
-				position absolute
-				size(0)
-				bottom 1.6rem
-				left 50%
-				transform translateX(-50%)
-				border-style solid
-				border-width 0 1rem 1.5rem 1rem
-				border-color: transparent transparent colors.darken-blue[2] transparent
-				
-			&::after
-				content ''
-				display block
-				position absolute
-				size(.6rem,2rem)
-				background: colors.darken-blue[2]
-				bottom .7rem
-				left 50%
-				transform translateX(-50%)
-			
-		&-label
-			display block
-			padding 1rem 1.5rem
-			
-			&:not(:last-of-type)
-				border-bottom: 1px solid colors.darken-yellow[1]
-			
-			&--big
-				padding 2rem 3rem
-				width 100%
-				text-align center
-
-				
-		&-steps
-			display inline-block
-			font-weight bold
-			margin-top .8rem
-			background-image url(../images/footsteps.png)	
-			background-size 1.6rem
-			background-repeat no-repeat
-			background-position 100% 0		
-			padding-right 2rem
+.regular-content
+	> *
+		margin-bottom 2.5rem
+		
+.page-title
+	color: colors.gray
+		
+.critical-error
+	max-width 45rem
+	padding 2rem
+	background-color: rgba(colors.red,.8)
+	color: colors.white
+	border-radius 1rem
 	
-		&-right
-			margin-left 2.5rem
-			width 100%
-			
-		&-nodes
-			//padding 1.5rem 3rem
-			//background-color: colors.lighten-gray[8]
-			//box-shadow: 1rem 1rem colors.lighten-gray[6]
-			//border: 1px solid colors.lighten-gray[6]
-			
-		&-verbose-direction
-			font-weight bold
-			background-color: colors.darken-blue[2]
-			color: colors.white
-
-		&-row
-			&--origin
-			&--target
-				background-color: colors.yellow
-
-			&--between
-				background-color: colors.lighten-gray[7]
-				
-				.route__step-label
-					background-color: colors.darken-yellow[2]
-				
-		&-between
-			&__list
-				transition opacity .3s ease
-				&-wrapper
-					background-color: colors.lighten-gray[8]
-					position relative
-					min-height 3rem
-					cursor pointer
-					transition background-color .3s ease
-					
-					&:hover
-						background-color: colors.lighten-gray[6]
-					&::before
-						content '...'
-						font-family Verdana
-						display inline-block
-						transform rotateZ(90deg)
-						position absolute
-						top .7rem
-						left 1.8rem
-						transition opacity .3s .2s ease
-						
-					.route__step-between__list
-						max-height 0
-						opacity 0
-						overflow hidden
-					
-					&&--active
-						&::before
-							transition opacity .3s ease
-							opacity 0
-						.route__step-between__list
-							transition opacity .3s .1s ease
-							opacity 1
-							max-height 1000px
-				
-			&__node
-				padding .6rem 2rem 
-
-
-
-+above(md)
-	.route
-		max-width 50rem
-		margin 0 0 auto 
+	h1
+		margin-bottom 2rem
+		padding-bottom .8rem
+		border-bottom: .4rem solid colors.white
 
 
 
