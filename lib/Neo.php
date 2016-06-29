@@ -1,5 +1,7 @@
 <?php
 
+/* DAO Class*/
+
 use GraphAware\Neo4j\Client\ClientBuilder;
 use GraphAware\Neo4j\Client\Neo4jClientEvents;
 

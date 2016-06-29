@@ -1,5 +1,5 @@
 <?php global $Request; ?>
-<aside class="header header--active">
+<aside class="header">
 	<button class="burguer js-mobile-btn">
 		<span class="burguer__stripe"></span>
 		<span class="burguer__stripe"></span>
@@ -45,7 +45,7 @@
 	</div>
 	<ul class="header__menu">
 		<li><a href="<?php echo ROOT_DIR; ?>">Sobre</a></li>
-		<li><a href="<?php echo ROOT_DIR.'contato'; ?>">Contato</a></li>
+		<!--<li><a href="<?php echo ROOT_DIR.'contato'; ?>">Contato</a></li>-->
 	</ul>
 </aside>
 <div class="search-viewer">

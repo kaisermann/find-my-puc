@@ -9,8 +9,6 @@ class Route
 
 	private static $m = [1,2,3,4,5,6,7,8];
 
-	public function __CONSTRUCT() {}
-
 	public static function getDirection($current, $prev)
 	{
 		/*

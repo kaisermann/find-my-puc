@@ -38,6 +38,7 @@ else
 
 define('IMG_DIR', ABSPATH.DIST_DIR.'images/nodes/');
 define('IMG_URL', ROOT_DIR.DIST_DIR.'images/nodes/');
+define('MEDIA_URL', ROOT_DIR.DIST_DIR.'images/media/');
 
 define('DEBUG', false);
 define('MINIFY_HTML', false);
